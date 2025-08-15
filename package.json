@@ -1,15 +1,15 @@
 {
     "name": "docugen-mcp",
-    "version": "4.0.0",
-    "description": "DocGen - Ultra Complete Google Docs API implementation via MCP with all 33 batch operations",
-    "main": "build/complete-server.js",
+    "version": "4.3.0",
+    "description": "DocGen - 100% COMPLETE Google Docs API - All 3 primary methods + 33 batch operations + helpers",
+    "main": "build/server.js",
     "type": "module",
     "bin": {
-      "docugen-mcp": "./build/complete-server.js"
+      "docugen-mcp": "./build/server.js"
     },
     "scripts": {
       "build": "tsc",
-      "start": "node build/complete-server.js",
+      "start": "node build/server.js",
       "dev": "tsc -w",
       "validate": "node scripts/validate.js",
       "prepublishOnly": "npm run build",
