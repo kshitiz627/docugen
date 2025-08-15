@@ -1,27 +1,48 @@
-# DocuGen MCP Server
+# Google Sheets MCP Server
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org)
-[![npm version](https://img.shields.io/npm/v/docugen-mcp.svg)](https://www.npmjs.com/package/docugen-mcp)
+[![npm version](https://img.shields.io/npm/v/@digitalgreen/sheets-mcp.svg)](https://www.npmjs.com/package/@digitalgreen/sheets-mcp)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
-[![Google APIs](https://img.shields.io/badge/Google%20APIs-Docs%20%26%20Drive-4285F4)](https://developers.google.com/docs/api)
+[![Google APIs](https://img.shields.io/badge/Google%20APIs-Sheets%20%26%20Drive-34A853)](https://developers.google.com/sheets/api)
 
-**Complete Google Docs automation for AI assistants. All 33 batch operations + tabs, suggestions, and analysis tools. 43+ operations total.**
+**Powerful Google Sheets automation for AI assistants. Financial modeling, expense tracking, data analysis, formulas, and more.**
 
 ## Features
 
-Complete implementation with clean architecture:
+### 📊 Core Spreadsheet Operations
+- Create and manage Google Sheets spreadsheets
+- Read and write data with formula support
+- Batch operations for efficiency
+- Multiple sheet management
 
-- ✅ **All 33 Batch Operations** - Every single Google Docs API batch operation
-- ✅ **Tab Management** - Full support for document tabs and nested tabs  
-- ✅ **Suggestions API** - Create and manage suggested changes
-- ✅ **Document Analysis** - Extract structure, metrics, and content
-- ✅ **Complete Table Operations** - Insert/delete rows/columns, merge/unmerge cells
-- ✅ **Style Management** - Document, section, and custom styles
-- ✅ **Error Handling** - Exponential backoff retry logic
-- ✅ **Performance Optimization** - Document caching and batch queuing
-- ✅ **UTF-16 Support** - Accurate index calculations for all Unicode
+### 💰 Financial Modeling
+- **P&L Statements** - Automated profit & loss generation
+- **Cash Flow Models** - Multi-year projections
+- **DCF Valuation** - Discounted cash flow analysis
+- **Financial Ratios** - Automatic calculation
+- **Scenario Analysis** - Multiple assumption sets
+
+### 📈 Data Analysis
+- **Pivot Tables** - Data summarization
+- **Charts** - Line, bar, pie, scatter plots
+- **Conditional Formatting** - Visual data rules
+- **Data Validation** - Input constraints
+- **Statistical Functions** - Built-in analysis
+
+### 💳 Expense Tracking
+- **Expense Logger** - Track spending by category
+- **Budget Management** - Set and monitor budgets
+- **Monthly Summaries** - Automatic reports
+- **Payment Methods** - Track by card/cash
+- **Category Analysis** - Spending patterns
+
+### 🔧 Formula Management
+- **Complex Formulas** - VLOOKUP, INDEX/MATCH, etc.
+- **Array Formulas** - Multi-cell calculations
+- **Custom Functions** - User-defined formulas
+- **Formula Auditing** - Dependency tracking
 
 ## Quick Start
 
@@ -29,17 +50,17 @@ Complete implementation with clean architecture:
 
 ```bash
 # Run directly with npx
-npx docugen-mcp
+npx @digitalgreen/sheets-mcp
 
 # Or install globally
-npm install -g docugen-mcp
+npm install -g @digitalgreen/sheets-mcp
 ```
 
 ### Setup (5 minutes)
 
 1. **Get Google Cloud Credentials**:
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create project, enable Docs & Drive APIs
+   - Create project, enable Sheets & Drive APIs
    - Create OAuth 2.0 credentials (Desktop app)
    - Download credentials JSON
 
@@ -49,9 +70,24 @@ npm install -g docugen-mcp
 ```json
 {
   "mcpServers": {
-    "docugen": {
+    "sheets": {
       "command": "npx",
-      "args": ["docugen-mcp"],
+      "args": ["-y", "@digitalgreen/sheets-mcp"],
+      "env": {
+        "GOOGLE_OAUTH_PATH": "/path/to/your/credentials.json"
+      }
+    }
+  }
+}
+```
+
+**VS Code (Cline/Continue):**
+```json
+{
+  "mcpServers": {
+    "sheets": {
+      "command": "npx",
+      "args": ["@digitalgreen/sheets-mcp"],
       "env": {
         "GOOGLE_OAUTH_PATH": "/path/to/credentials.json"
       }
@@ -60,297 +96,247 @@ npm install -g docugen-mcp
 }
 ```
 
-3. **Start Using**:
-   - Restart your AI assistant
-   - Test: "Create a new Google Doc"
-   - Authenticate once when browser opens
-
-## Complete Tool List (70+ Operations)
-
-### Core Document Operations
-- `create-document` - Create with initial content
-- `get-document` - Retrieve with field masks  
-- `delete-document` - Move to trash
-- `analyze-document` - Extract structure and metrics
-
-### Text Operations (Complete)
-- `insert-text` - Insert at multiple positions
-- `delete-text` - Delete content ranges
-- `replace-all-text` - Find and replace
-- `move-text` - Move between positions
-
-### Formatting (Complete)
-- `update-text-style` - Bold, italic, colors, fonts, links
-- `update-paragraph-style` - Headings, alignment, spacing, indentation
-- `update-document-style` - Document-wide styles
-- `update-section-style` - Section-specific styles
-
-### Tables (Complete)
-- `insert-table` - Create with content
-- `insert-table-row` - Add rows
-- `insert-table-column` - Add columns
-- `delete-table-row` - Remove rows
-- `delete-table-column` - Remove columns
-- `update-table-cell-style` - Style cells
-- `update-table-row-style` - Style rows
-- `update-table-column-properties` - Set widths
-- `merge-table-cells` - Merge cells
-- `unmerge-table-cells` - Split cells
-- `pin-table-header-rows` - Fix headers
-
-### Lists
-- `create-paragraph-bullets` - Bullet/numbered/checkbox lists
-- `delete-paragraph-bullets` - Remove list formatting
-
-### Images & Objects
-- `insert-inline-image` - Add from URLs
-- `replace-image` - Replace existing
-- `delete-positioned-object` - Remove images
-
-### Document Structure
-- `insert-page-break` - Page breaks
-- `insert-section-break` - Section breaks
-- `create-header` - Add headers
-- `create-footer` - Add footers
-- `delete-header` - Remove headers
-- `delete-footer` - Remove footers
-- `create-footnote` - Add footnotes
-
-### Named Ranges
-- `create-named-range` - Create ranges
-- `delete-named-range` - Remove ranges
-- `replace-named-range-content` - Replace content
-
-### Tab Management (New)
-- `get-tabs` - List all tabs
-- `create-tab` - Create new tab
-- `delete-tab` - Remove tab
-- `rename-tab` - Change title
-- `move-tab` - Reorder tabs
-- `get-tab-content` - Get specific tab
-
-### Suggestions API (New)
-- `create-suggestion` - Create suggested edits
-- `list-suggestions` - Get all suggestions
-- `accept-suggestion` - Accept changes
-- `reject-suggestion` - Reject changes
-- `get-document-with-suggestions` - View inline
-
-### Document Analysis (New)
-- `extract-outline` - Get structure
-- `get-word-count` - Statistics
-- `find-all-links` - Extract links
-- `find-all-images` - List images
-- `find-all-tables` - List tables
-- `calculate-reading-time` - Reading estimate
-
-### High-Level Workflows
-- `create-report` - Generate reports
-- `create-resume` - Build resumes
-- `mail-merge` - Bulk generation
-- `convert-markdown` - Import markdown
-- `export-markdown` - Export markdown
-
-### Batch Operations
-- `batch-update` - Execute any of 33 operations
+3. **Authenticate**: On first run, authorize the application. Token is saved for future use.
 
 ## Usage Examples
 
-### Complete Document Creation
+### Financial Modeling
 
+```
+"Create a 5-year financial model for a SaaS startup with 20% monthly growth"
+
+"Build a DCF valuation model with terminal value calculation"
+
+"Create a unit economics model with CAC, LTV, and payback period"
+```
+
+### Expense Tracking
+
+```
+"Create an expense tracker with categories for food, transport, and utilities"
+
+"Add today's expenses: $45 lunch, $20 uber, $150 electricity bill"
+
+"Show me spending trends for the last 3 months"
+```
+
+### Data Analysis
+
+```
+"Create a pivot table summarizing sales by region and product"
+
+"Add a chart showing monthly revenue trends"
+
+"Apply conditional formatting to highlight values above average"
+```
+
+### Formula Examples
+
+```
+"Add a SUMIF formula to calculate total sales for each region"
+
+"Create a VLOOKUP to match customer IDs with names"
+
+"Build an amortization schedule with PMT formulas"
+```
+
+## Available Tools
+
+### Spreadsheet Management
+- `sheets_create` - Create new spreadsheet with initial data
+- `sheets_read` - Read data from range (with formula support)
+- `sheets_write` - Write data to range
+- `sheets_list` - List all sheets in spreadsheet
+- `sheets_add_sheet` - Add new sheet to existing spreadsheet
+
+### Formula Operations
+- `sheets_add_formula` - Add single formula to cell
+- `sheets_add_formulas_batch` - Add multiple formulas efficiently
+
+### Financial Modeling
+- `sheets_create_financial_model` - Complete P&L, Cash Flow, Balance Sheet
+- `sheets_dcf_model` - DCF valuation with terminal value
+
+### Expense Tracking
+- `sheets_expense_tracker` - Create categorized expense tracker
+- `sheets_add_expense` - Log expense entry with details
+
+### Data Analysis
+- `sheets_pivot_table` - Create pivot table for analysis
+- `sheets_add_chart` - Add chart visualization
+
+### Formatting
+- `sheets_format_range` - Apply cell formatting (colors, borders, number formats)
+- `sheets_conditional_format` - Add conditional formatting rules
+- `sheets_protect_range` - Protect cells from editing
+
+## Real-World Use Cases
+
+### 1. **Startup Financial Planning**
 ```javascript
-// Create document
-await createDocument({
-  title: "Q4 2024 Report",
-  content: "Executive Summary"
-});
-
-// Add sections (auto-sorted descending)
-await insertText({
-  documentId: "doc123",
-  insertions: [
-    { index: 100, text: "Results" },
-    { index: 50, text: "Achievements" },
-    { index: 150, text: "Outlook" }
-  ]
-});
-
-// Create data table
-await insertTable({
-  documentId: "doc123",
-  index: 200,
-  rows: 4,
-  columns: 3,
-  content: [
-    ["Metric", "Q3", "Q4"],
-    ["Revenue", "$1.2M", "$1.5M"],
-    ["Users", "10K", "15K"],
-    ["Growth", "20%", "25%"]
-  ]
-});
-
-// Style header row
-await updateTableRowStyle({
-  documentId: "doc123",
-  tableStartIndex: 200,
-  rowIndices: [0],
-  backgroundColor: "#4285f4",
-  foregroundColor: "#ffffff",
-  bold: true
-});
-
-// Merge cells
-await mergeTableCells({
-  documentId: "doc123",
-  tableStartIndex: 200,
-  rowIndex: 3,
-  columnIndex: 0,
-  rowSpan: 1,
-  columnSpan: 2
-});
+// Create complete financial model
+"Create a financial model for my startup with:
+- $100k initial revenue
+- 15% monthly growth
+- 70% gross margin
+- 40% operating expenses"
 ```
 
-### Tab Management
-
+### 2. **Personal Budget Tracker**
 ```javascript
-// Create tabs
-await createTab({
-  documentId: "doc123",
-  title: "Technical Specs"
-});
-
-// Add content to specific tab
-await insertText({
-  documentId: "doc123",
-  tabId: "tab-2",
-  insertions: [
-    { index: 1, text: "API Endpoints" }
-  ]
-});
+// Set up expense tracking
+"Create an expense tracker with:
+- Categories: Rent, Food, Transport, Entertainment
+- Monthly budgets: $2000, $500, $200, $300
+- Track by credit card and cash"
 ```
 
-### Suggestions
-
+### 3. **Sales Dashboard**
 ```javascript
-// Create suggestion
-await createSuggestion({
-  documentId: "doc123",
-  suggestionId: "sug-001",
-  insertText: {
-    index: 50,
-    text: "Needs review"
-  }
-});
-
-// Accept suggestion
-await acceptSuggestion({
-  documentId: "doc123",
-  suggestionId: "sug-001"
-});
+// Build analytics dashboard
+"Create a sales dashboard with:
+- Monthly revenue by product
+- Regional performance comparison
+- YoY growth charts
+- Top 10 customers by revenue"
 ```
 
-## Critical Implementation Details
-
-### 1. Backward Ordering
-Operations automatically sorted descending:
+### 4. **Investment Portfolio**
 ```javascript
-// Input: [10, 50, 100]
-// Executed: 100 → 50 → 10
+// Track investments
+"Create an investment tracker with:
+- Stock positions and cost basis
+- Current prices with Google Finance formulas
+- P&L calculations
+- Asset allocation pie chart"
 ```
 
-### 2. Table Cell Addressing
-Zero-based indices with table start:
+### 5. **Project Budget Management**
 ```javascript
-{
-  tableCellLocation: {
-    tableStartLocation: { index: 200 },
-    rowIndex: 0,
-    columnIndex: 1
-  }
-}
+// Project financial tracking
+"Create a project budget tracker with:
+- Task breakdown with estimated vs actual costs
+- Resource allocation
+- Burn rate calculation
+- Variance analysis"
 ```
 
-### 3. UTF-16 Encoding
-Accurate character counting:
-```javascript
-"Hello 😀" // 8 UTF-16 units, not 7
+## Performance Benefits
+
+- **3-5x faster** than document-based approaches
+- **Native formula execution** in Sheets engine
+- **Batch operations** reduce API calls
+- **Direct cell updates** without formatting overhead
+- **Built-in calculation engine** for complex models
+
+## Advanced Features
+
+### Complex Financial Models
+- Multi-year projections
+- Sensitivity analysis
+- Monte Carlo simulations
+- IRR/NPV calculations
+- Loan amortization schedules
+
+### Data Processing
+- Import/export CSV data
+- Data cleaning and transformation
+- Duplicate detection
+- Data validation rules
+- Cross-sheet references
+
+### Automation
+- Recurring expense templates
+- Automatic categorization
+- Budget alerts
+- Scheduled reports
+- Data synchronization
+
+## Development
+
+```bash
+# Clone repository
+git clone https://github.com/eagleisbatman/sheets-mcp.git
+cd sheets-mcp
+
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Run development mode
+npm run dev
+
+# Test locally
+GOOGLE_OAUTH_PATH=/path/to/credentials.json npm start
 ```
 
-### 4. Error Handling
-Automatic retry with exponential backoff for rate limits.
-
-### 5. Performance
-- Document caching
-- Batch queuing (up to 100)
-- Field masks for efficiency
-
-## Architecture
-
+### Project Structure
 ```
-DocuGen MCP Server v4.0
-├── Core Systems
-│   ├── Authentication (OAuth 2.0)
-│   ├── Error Handling (Exponential Backoff)
-│   ├── Document Cache
-│   └── Batch Queue
-├── Managers
-│   ├── Document Manager
-│   ├── Tab Manager
-│   ├── Table Manager
-│   ├── Style Manager
-│   ├── Suggestion Manager
-│   └── Named Range Manager
-├── Utilities
-│   ├── UTF-16 Calculator
-│   ├── Index Validator
-│   ├── Field Mask Builder
-│   └── Batch Optimizer
-└── MCP Interface
-    ├── 33 Batch Operations
-    ├── Tab Operations (10+)
-    ├── Suggestion Operations (8+)
-    ├── Analysis Operations (10+)
-    └── High-Level Workflows (5+)
+sheets-mcp/
+├── src/
+│   └── sheets-server.ts    # Main MCP server
+├── build/                   # Compiled JavaScript
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-## Why DocuGen is Production Ready
+## Configuration
 
-1. **Complete API Coverage** - Every Google Docs API endpoint
-2. **Clean Architecture** - Single implementation, modular utilities
-3. **Nothing Missing** - All 33 operations + advanced features
-4. **Production Ready** - Error handling, caching, and retries
-5. **Well Tested** - All operations verified and working
+### Environment Variables
+- `GOOGLE_OAUTH_PATH` - Path to Google OAuth credentials JSON
+- `SHEETS_TOKEN_PATH` - Custom token storage location (optional)
+- `LOG_LEVEL` - Logging verbosity (debug/info/warn/error)
 
-## For Organizations
+### Token Storage
+Tokens are stored at `~/.docugen/sheets_token.json` by default. This can be customized via environment variables.
 
-Deploy for your entire team with one setup. Each employee maintains private access.
+## Troubleshooting
 
-### IT Setup (15 minutes)
-1. Create Google Cloud project
-2. Enable Docs & Drive APIs
-3. Create OAuth credentials
-4. Share configuration with team
+### Common Issues
 
-### Employee Setup (2 minutes)
-1. Add configuration to AI assistant
-2. Restart assistant
-3. Authenticate once
-4. Start creating documents
+1. **Authentication Failed**
+   - Ensure credentials.json is valid
+   - Check API is enabled in Google Cloud Console
+   - Verify OAuth consent screen is configured
 
-## Support
+2. **Permission Denied**
+   - Grant spreadsheet edit permissions
+   - Check OAuth scopes include sheets and drive
 
-- GitHub Issues: [github.com/eagleisbatman/docugen/issues](https://github.com/eagleisbatman/docugen/issues)
-- Documentation: [Google Docs API](https://developers.google.com/docs/api)
+3. **Formula Errors**
+   - Use USER_ENTERED input option for formulas
+   - Verify formula syntax matches Google Sheets
 
-## Author
+4. **Rate Limiting**
+   - Server implements exponential backoff
+   - Batch operations to reduce API calls
 
-**Created by Gautam Mandewalker**
+## Contributing
 
-📍 Cumming, Forsyth County, Georgia, USA
-
-🔗 [GitHub](https://github.com/eagleisbatman) | [LinkedIn](https://www.linkedin.com/in/gautammandewalker/)
+Contributions welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new features
+4. Submit a pull request
 
 ## License
 
-Apache-2.0
+Apache-2.0 - See [LICENSE](LICENSE) file
 
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/eagleisbatman/sheets-mcp/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/eagleisbatman/sheets-mcp/discussions)
+
+## Author
+
+**Gautam Mandewalker**
+
+---
+
+Built for the MCP ecosystem to enable powerful spreadsheet automation with AI assistants.
+
+Perfect for financial modeling, data analysis, expense tracking, and any spreadsheet automation needs.

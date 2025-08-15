@@ -78,4 +78,13 @@ temp/
 *.zip
 *.tar.gz
 *.rar
-*.7z 
+*.7z
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pickle
