@@ -336,35 +336,46 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 "Generate a business case with financial tables"
 ```
 
-### 🔄 NEW: Incremental Document Building
-DocuGen now supports incremental document creation, allowing you to build documents step-by-step for better control and reliability:
+### 🎯 NEW: Simplified Markdown Approach
+DocuGen now supports creating documents from GitHub-flavored markdown - the format AI assistants naturally generate:
 
 ```
-"Start a new document session called 'Project Proposal'"
-"Add a heading 'Executive Summary'"
-"Add a paragraph about our project goals"
-"Now add a table with budget breakdown"
-"Add another section called 'Timeline'"
-"Show me the current document state"
-"End the document session"
+"Create a document with this markdown content:
+# Project Proposal
+## Executive Summary
+This project aims to improve our search functionality.
+
+## Features
+- Advanced filtering
+- Real-time results
+- Search history
+
+## Timeline
+| Phase | Duration | Deliverable |
+|-------|----------|-------------|
+| Design | 2 weeks | Mockups |
+| Development | 4 weeks | Beta version |
+| Testing | 1 week | Final release |
+"
 ```
 
-**Incremental Approach Benefits:**
-- **Better Control:** Build documents piece by piece
-- **Improved Reliability:** Each operation is independent
-- **Real-time Feedback:** Check document state at any time
-- **Flexible Workflow:** Add, modify, and organize content iteratively
-- **Complex Tables:** Add tables one at a time for better success
+**Why Markdown?**
+- **Natural for AI:** AI assistants already generate markdown naturally
+- **Reliable:** Simple text format that always works
+- **Full Formatting:** Supports headings, lists, tables, code blocks, quotes
+- **GitHub Compatible:** Same markdown you use in README files
+- **One-shot Creation:** Send entire document at once, no complex operations
 
-**Available Incremental Commands:**
-- `start-doc-session` - Begin a new document session
-- `add-doc-text` - Add formatted text
-- `add-doc-heading` - Add headings (levels 1-3)
-- `add-doc-list` - Add bullet or numbered lists
-- `add-doc-table` - Add tables (automatically placed at optimal position)
-- `get-doc-state` - View current document content and structure
-- `list-doc-sessions` - See all active sessions
-- `end-doc-session` - Close a session when done
+**Supported Markdown Features:**
+- Headings (# ## ### etc.)
+- Bold (**text**) and italic (*text*)
+- Bullet lists (- item) and numbered lists (1. item)
+- Tables with pipes (|col1|col2|)
+- Code blocks with ``` 
+- Blockquotes with >
+- Horizontal rules with ---
+
+The AI can simply generate the document content in markdown format and DocuGen will create a properly formatted Google Doc with native formatting.
 
 ## 📑 Available Templates
 

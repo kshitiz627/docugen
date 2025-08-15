@@ -11,6 +11,7 @@ import * as process from "process";
 import { z } from "zod";
 import { docs_v1, drive_v3 } from "googleapis";
 import { IncrementalDocumentBuilder } from "./incremental.js";
+import { MarkdownToDocsConverter } from "./markdown.js";
 
 // Handle command line arguments
 if (process.argv.includes('--version') || process.argv.includes('-v')) {
@@ -1396,6 +1397,61 @@ server.tool(
         }]
       };
     } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// ============================================================================
+// MARKDOWN DOCUMENT CREATION (SIMPLIFIED APPROACH)
+// ============================================================================
+
+let markdownConverter: MarkdownToDocsConverter | null = null;
+
+// Initialize markdown converter
+function initMarkdownConverter() {
+  if (docsClient) {
+    markdownConverter = new MarkdownToDocsConverter(docsClient);
+    return true;
+  }
+  return false;
+}
+
+// Create document from markdown
+server.tool(
+  "create-doc-markdown",
+  {
+    title: z.string().describe("Document title"),
+    markdown: z.string().describe("Document content in GitHub-flavored markdown format")
+  },
+  async ({ title, markdown }) => {
+    try {
+      if (!markdownConverter && !initMarkdownConverter()) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ Google API not initialized. Please check credentials."
+          }],
+          isError: true
+        };
+      }
+      
+      const documentId = await markdownConverter!.createFromMarkdown(title, markdown);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Created document "${title}"\nID: ${documentId}\n\nThe document has been formatted from markdown with headings, lists, tables, and styling.`
+        }]
+      };
+    } catch (error) {
+      console.error("Error creating markdown document:", error);
       return {
         content: [{
           type: "text",
