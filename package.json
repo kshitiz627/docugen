@@ -1,7 +1,7 @@
 {
     "name": "docugen-mcp",
-    "version": "5.0.0",
-    "description": "DocGen - 100% COMPLETE Google Docs API - All 3 primary methods + 33 batch operations + helpers",
+    "version": "1.0.0",
+    "description": "MCP server that enables AI assistants to create, edit, and manage Google Docs with advanced formatting, tables, and collaboration features",
     "main": "build/server.js",
     "type": "module",
     "bin": {
