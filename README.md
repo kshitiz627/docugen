@@ -7,7 +7,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
 [![Google APIs](https://img.shields.io/badge/Google%20APIs-Docs%20%26%20Drive-4285F4)](https://developers.google.com/docs/api)
 
-**🎯 Transform your AI assistant into a Google Docs powerhouse. Create beautiful, natively-formatted documents with templates and automation.**
+**🎯 Simple Google Docs automation for AI assistants. Just 4 reliable tools: Create, Update, Delete, Format.**
 
 ## 📋 Table of Contents
 
@@ -25,16 +25,16 @@
 
 ## 🎨 About
 
-DocuGen is a Model Context Protocol (MCP) server that empowers AI assistants to create professional Google Docs with native formatting. Unlike traditional markdown exports, DocuGen creates real Google Docs with proper tables, headings, lists, and styling - all through simple conversational commands.
+DocuGen is a simplified Model Context Protocol (MCP) server that gives AI assistants basic, reliable Google Docs control. Version 2.0 focuses on simplicity and reliability with just 4 essential tools.
 
-### What Makes DocuGen Special?
+### What Makes DocuGen v2 Special?
 
-- **🎯 Native Google Docs** - Not markdown conversions, but real Google Docs with all formatting features
-- **📝 Professional Templates** - Built-in templates for PRDs, tech specs, test plans, and more
+- **✅ Simple & Reliable** - Just 4 tools that work every time
+- **🎯 No Complex Operations** - No bulk operations or nested structures that fail
 - **🤖 Universal Compatibility** - Works with Claude, Cursor, Windsurf, Cline, and other MCP-compatible AI assistants
 - **🔒 Secure & Private** - Each user authenticates individually and accesses only their own documents
 - **⚡ Zero Installation** - Runs directly with npx, no complex setup required
-- **🏢 Enterprise Ready** - Simple deployment for teams of any size
+- **📄 Basic Formatting** - Headings, bold, italic, underline - the essentials that work
 
 ## 🤔 Why DocuGen?
 
@@ -313,104 +313,77 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 
 ## 💬 Usage Examples
 
-### Basic Document Operations
+### The 4 Simple Tools
+
+#### 1. CreateDoc - Create a new document
 ```
 "Create a new Google Doc called 'Q4 Planning Meeting'"
+"Create a document titled 'Project Proposal' with initial content"
+```
+
+#### 2. UpdateDoc - Update existing document
+```
+"Update document ABC123 with new content"
+"Append to document ABC123 this additional text"
+"Replace all content in document ABC123"
+```
+
+#### 3. DeleteDoc - Delete a document
+```
+"Delete document ABC123"
+"Remove the old draft document XYZ789"
+```
+
+#### 4. FormatDoc - Apply simple formatting
+```
+"Make 'Executive Summary' a heading in document ABC123"
+"Bold the text 'Important' in document ABC123"
+"Italicize 'Note:' in the document"
+```
+
+### ListDocs - View your documents (Resource)
+```
 "List my recent Google Docs"
-"Search for documents containing 'roadmap'"
-"Update the introduction in document ABC123"
+"Show my documents"
 ```
 
-### Using Templates
-```
-"Create a PRD for our new search feature"
-"Generate a technical specification for the payment API"
-"Make a test plan for the checkout flow"
-"Create release notes for version 2.5"
-```
+### How to Use Effectively
 
-### Advanced Formatting
+**Step 1: Create**
 ```
-"Create a document with a table comparing our pricing tiers"
-"Make a report with sections, bullet points, and highlighted text"
-"Generate a business case with financial tables"
+User: "Create a document called 'Project Plan'"
+AI: Uses CreateDoc → Returns document ID: abc123
 ```
 
-### 🎯 NEW: Simplified Markdown Approach
-DocuGen now supports creating AND updating documents from GitHub-flavored markdown - the format AI assistants naturally generate:
-
-**Creating a new document:**
+**Step 2: Update**
 ```
-"Create a document with this markdown content:
-# Project Proposal
-## Executive Summary
-This project aims to improve our search functionality.
-
-## Features
-- Advanced filtering
-- Real-time results
-- Search history
-
-## Timeline
-| Phase | Duration | Deliverable |
-|-------|----------|-------------|
-| Design | 2 weeks | Mockups |
-| Development | 4 weeks | Beta version |
-| Testing | 1 week | Final release |
-"
+User: "Add section about timeline"
+AI: Uses UpdateDoc with ID abc123 in append mode
 ```
 
-**Updating an existing document:**
+**Step 3: Format**
 ```
-"Update document [document_id] with this new content:
-# Project Proposal (Updated)
-## Executive Summary
-Updated content here...
-"
+User: "Make the headings bold"
+AI: Uses FormatDoc with ID abc123
 ```
 
-**Appending to a document:**
-```
-"Append to document [document_id] this additional content:
-## New Section
-Additional content to add at the end...
-"
-```
+### Tips for Success
+- **Keep it simple** - Don't try complex nested structures
+- **Update incrementally** - Add content piece by piece
+- **Basic formatting only** - Bold, italic, headings work best
+- **Plain text first** - Get content in, then format
 
-**Why Markdown?**
-- **Natural for AI:** AI assistants already generate markdown naturally
-- **Reliable:** Simple text format that always works
-- **Full Formatting:** Supports headings, lists, tables, code blocks, quotes
-- **GitHub Compatible:** Same markdown you use in README files
-- **One-shot Creation:** Send entire document at once, no complex operations
-- **Update Support:** Update existing documents instead of creating new ones each time
+## 📝 Version 2.0 Changes
 
-**Supported Markdown Features:**
-- Headings (# ## ### etc.)
-- Bold (**text**) and italic (*text*)
-- Bullet lists (- item) and numbered lists (1. item)
-- Tables with pipes (|col1|col2|)
-- Code blocks with ``` 
-- Blockquotes with >
-- Horizontal rules with ---
+**Simplified from v1.x:**
+- Removed complex template system
+- Removed markdown conversion 
+- Removed incremental builders
+- Removed table creation (too unreliable)
+- Focus on 4 core tools that always work
 
-The AI can simply generate the document content in markdown format and DocuGen will create or update a properly formatted Google Doc with native formatting.
-
-**Available Markdown Tools:**
-- `create-doc-markdown` - Create a new document from markdown
-- `update-doc-markdown` - Update existing document (replace or append mode)
-
-## 📑 Available Templates
-
-DocuGen includes professional templates ready to use:
-
-- **Product Requirements Document (PRD)** - User stories, success metrics, requirements
-- **Technical Specification** - Architecture, API design, data models
-- **Test Plan** - Test cases, coverage, entry/exit criteria
-- **Release Notes** - Features, improvements, known issues
-- **Business Case** - ROI analysis, risk assessment, recommendations
-
-Simply ask: "Create a [template name] for [your topic]"
+**Why the change?**
+Google Docs API has limitations with complex operations. Version 2.0 focuses on simple, reliable tools that work every time rather than complex features that fail unpredictably.
 
 ## 🏢 For Organizations
 

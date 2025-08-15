@@ -1,11 +1,11 @@
 {
     "name": "docugen-mcp",
-    "version": "1.4.0",
-    "description": "DocGen - Google Docs automation with templates and formatting via MCP",
-    "main": "build/server.js",
+    "version": "2.0.0",
+    "description": "DocGen - Simple Google Docs automation via MCP",
+    "main": "build/simple-server.js",
     "type": "module",
     "bin": {
-      "docugen-mcp": "./build/server.js"
+      "docugen-mcp": "./build/simple-server.js"
     },
     "scripts": {
       "build": "tsc",
