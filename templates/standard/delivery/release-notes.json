@@ -1,0 +1,103 @@
+{
+  "id": "release-notes",
+  "name": "Release Notes",
+  "description": "Product release documentation",
+  "category": "delivery",
+  "version": "1.0",
+  "sections": [
+    {
+      "type": "heading",
+      "content": "{{product_name}} Release Notes",
+      "level": 1,
+      "style": {
+        "bold": true,
+        "fontSize": 24
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Version: {{version}}\nRelease Date: {{date}}\nRelease Manager: {{release_manager}}",
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "heading",
+      "content": "What's New",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "bullet_list",
+      "items": [
+        "{{new_feature_1}}",
+        "{{new_feature_2}}",
+        "{{new_feature_3}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Improvements",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "bullet_list",
+      "items": [
+        "{{improvement_1}}",
+        "{{improvement_2}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Bug Fixes",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "bullet_list",
+      "items": [
+        "{{bug_fix_1}}",
+        "{{bug_fix_2}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Known Issues",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Issue", "Workaround", "Fix ETA"],
+        ["{{issue_1}}", "{{workaround_1}}", "{{eta_1}}"],
+        ["{{issue_2}}", "{{workaround_2}}", "{{eta_2}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Upgrade Instructions",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "numbered_list",
+      "items": [
+        "{{upgrade_step_1}}",
+        "{{upgrade_step_2}}",
+        "{{upgrade_step_3}}"
+      ]
+    }
+  ]
+}

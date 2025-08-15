@@ -40,15 +40,47 @@ DocuGen is an MCP server that empowers AI assistants like Claude to create profe
 - Paragraph alignment
 - Automatic placeholders
 
-## 🚀 Quick Start
+## 🏢 Deployment Options
 
-### Prerequisites
+### For Organizations (Recommended for Teams)
+
+**The Problem:** Individual OAuth setup is not scalable for 200+ users. Non-technical staff cannot configure Google Cloud projects.
+
+**Solutions:**
+
+#### Option 1: Centralized Service Account (Best for Enterprise)
+- IT deploys one service account with domain-wide delegation
+- Users connect to a shared MCP server endpoint
+- No individual OAuth setup required
+- Single configuration managed by IT
+
+#### Option 2: NPM Package Distribution
+```bash
+# IT publishes internal package
+npm install @yourcompany/docugen-mcp
+
+# Auto-configures Claude Desktop
+npx docugen-setup
+```
+- Pre-configured with company OAuth app
+- One-click setup for end users
+- Automatic updates via npm
+
+#### Option 3: Pre-configured Installer
+- IT creates installer with embedded credentials
+- Users run .exe/.dmg installer
+- Automatically configures Claude Desktop
+- No technical knowledge required
+
+### For Individual Users
+
+#### Prerequisites
 - Node.js 16.0.0 or higher
 - npm or yarn
 - Claude Desktop app
 - Google account
 
-### Installation
+#### Installation
 
 1. **Clone the repository**
 ```bash
@@ -280,17 +312,14 @@ Templates are JSON files with a specific structure. Create them in `~/.docgen/te
 - Check the scopes in your OAuth configuration
 - Delete `token.json` and re-authorize with correct permissions
 
-## 🤝 Contributing
+## 🏢 Enterprise Deployment
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Ways to Contribute
-- 🐛 Report bugs and issues
-- 💡 Suggest new features
-- 📝 Create new templates
-- 🔧 Submit pull requests
-- 📚 Improve documentation
-- ⭐ Star the repository
+For organizations looking to deploy DocuGen at scale, please see our [Enterprise Deployment Guide](ENTERPRISE.md) which covers:
+- Service account setup for 200+ users
+- NPM package distribution
+- One-click installers for non-technical users
+- Centralized template management
+- Usage monitoring and compliance
 
 ## 📄 License
 
@@ -302,12 +331,12 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - Powered by [Google Docs API](https://developers.google.com/docs/api) and [Google Drive API](https://developers.google.com/drive/api)
 - Special thanks to the MCP community
 
-## 🔗 Links
+## 🔗 Resources
 
-- [Documentation](https://github.com/eagleisbatman/docugen/wiki)
-- [Issues](https://github.com/eagleisbatman/docugen/issues)
-- [Discussions](https://github.com/eagleisbatman/docugen/discussions)
-- [Model Context Protocol](https://modelcontextprotocol.io)
+- [Enterprise Deployment Guide](ENTERPRISE.md)
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io)
+- [Google Workspace Admin Guide](https://support.google.com/a)
+- [Internal Support](mailto:it-support@yourcompany.com)
 
 ## 🚦 Status
 

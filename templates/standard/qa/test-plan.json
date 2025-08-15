@@ -1,0 +1,99 @@
+{
+  "id": "test-plan",
+  "name": "Test Plan",
+  "description": "Comprehensive QA test plan template",
+  "category": "qa",
+  "version": "1.0",
+  "sections": [
+    {
+      "type": "heading",
+      "content": "{{title}} - Test Plan",
+      "level": 1,
+      "style": {
+        "bold": true,
+        "fontSize": 24
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Test Lead: {{test_lead}}\nDate: {{date}}\nVersion: {{version}}",
+      "style": {
+        "italic": true
+      }
+    },
+    {
+      "type": "heading",
+      "content": "Test Scope",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{test_scope}}"
+    },
+    {
+      "type": "heading",
+      "content": "Test Objectives",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "bullet_list",
+      "items": [
+        "{{objective_1}}",
+        "{{objective_2}}",
+        "{{objective_3}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Test Strategy",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Test Type", "Coverage", "Tools", "Responsible"],
+        ["Unit Testing", "{{unit_coverage}}", "{{unit_tools}}", "{{unit_responsible}}"],
+        ["Integration Testing", "{{integration_coverage}}", "{{integration_tools}}", "{{integration_responsible}}"],
+        ["E2E Testing", "{{e2e_coverage}}", "{{e2e_tools}}", "{{e2e_responsible}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Test Cases",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["ID", "Test Case", "Priority", "Expected Result"],
+        ["TC001", "{{test_case_1}}", "{{priority_1}}", "{{expected_1}}"],
+        ["TC002", "{{test_case_2}}", "{{priority_2}}", "{{expected_2}}"],
+        ["TC003", "{{test_case_3}}", "{{priority_3}}", "{{expected_3}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Entry and Exit Criteria",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Entry Criteria:\n{{entry_criteria}}\n\nExit Criteria:\n{{exit_criteria}}"
+    }
+  ]
+}

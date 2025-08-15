@@ -1,0 +1,94 @@
+{
+  "id": "business-case",
+  "name": "Business Case Document",
+  "description": "Business justification for new initiatives",
+  "category": "business",
+  "version": "1.0",
+  "sections": [
+    {
+      "type": "heading",
+      "content": "{{title}} - Business Case",
+      "level": 1,
+      "style": {
+        "bold": true,
+        "fontSize": 24
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Prepared by: {{author}}\nDate: {{date}}\nDepartment: {{department}}",
+      "style": {
+        "italic": true
+      }
+    },
+    {
+      "type": "heading",
+      "content": "Executive Summary",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{executive_summary}}"
+    },
+    {
+      "type": "heading",
+      "content": "Business Opportunity",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{business_opportunity}}"
+    },
+    {
+      "type": "heading",
+      "content": "Financial Analysis",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Metric", "Year 1", "Year 2", "Year 3"],
+        ["Investment", "{{investment_y1}}", "{{investment_y2}}", "{{investment_y3}}"],
+        ["Revenue", "{{revenue_y1}}", "{{revenue_y2}}", "{{revenue_y3}}"],
+        ["ROI", "{{roi_y1}}", "{{roi_y2}}", "{{roi_y3}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Risks and Mitigation",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Risk", "Impact", "Mitigation Strategy"],
+        ["{{risk_1}}", "{{impact_1}}", "{{mitigation_1}}"],
+        ["{{risk_2}}", "{{impact_2}}", "{{mitigation_2}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Recommendation",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{recommendation}}"
+    }
+  ]
+}
