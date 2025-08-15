@@ -1,15 +1,15 @@
 {
   "name": "@digitalgreen/sheets-mcp",
-  "version": "1.0.0",
-  "description": "MCP server for Google Sheets - financial modeling, expense tracking, data analysis, formulas, and spreadsheet automation",
-  "main": "build/sheets-server.js",
+  "version": "2.0.0",
+  "description": "Practical Google Sheets MCP - Smart templates for expense tracking, budgets, projects, and financial models",
+  "main": "build/practical-sheets-server.js",
   "type": "module",
   "bin": {
-    "sheets-mcp": "./build/sheets-server.js"
+    "sheets-mcp": "./build/practical-sheets-server.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node build/sheets-server.js",
+    "start": "node build/practical-sheets-server.js",
     "dev": "tsc -w",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
