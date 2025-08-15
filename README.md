@@ -7,7 +7,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
 [![Google APIs](https://img.shields.io/badge/Google%20APIs-Docs%20%26%20Drive-4285F4)](https://developers.google.com/docs/api)
 
-**🎯 Simple Google Docs automation for AI assistants. Just 4 reliable tools: Create, Update, Delete, Format.**
+**🎯 Simple Google Docs automation for AI assistants. Just 5 reliable tools: Create, Update, Delete, Format, and Convert Tables.**
 
 ## 📋 Table of Contents
 
@@ -25,11 +25,12 @@
 
 ## 🎨 About
 
-DocuGen is a simplified Model Context Protocol (MCP) server that gives AI assistants basic, reliable Google Docs control. Version 2.0 focuses on simplicity and reliability with just 4 essential tools.
+DocuGen is a simplified Model Context Protocol (MCP) server that gives AI assistants basic, reliable Google Docs control. Version 2.1 focuses on simplicity and reliability with just 5 essential tools, including markdown table support.
 
-### What Makes DocuGen v2 Special?
+### What Makes DocuGen v2.1 Special?
 
-- **✅ Simple & Reliable** - Just 4 tools that work every time
+- **✅ Simple & Reliable** - Just 5 tools that work every time
+- **📊 Markdown Tables** - Create tables as formatted text, optionally convert to real tables
 - **🎯 No Complex Operations** - No bulk operations or nested structures that fail
 - **🤖 Universal Compatibility** - Works with Claude, Cursor, Windsurf, Cline, and other MCP-compatible AI assistants
 - **🔒 Secure & Private** - Each user authenticates individually and accesses only their own documents
@@ -313,7 +314,7 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 
 ## 💬 Usage Examples
 
-### The 4 Simple Tools
+### The 5 Simple Tools
 
 #### 1. CreateDoc - Create a new document
 ```
@@ -341,6 +342,15 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 "Italicize 'Note:' in the document"
 ```
 
+#### 5. ConvertToTable - Convert markdown tables to real tables
+```
+"Convert this markdown table in document ABC123:
+| Name | Age | City |
+|------|-----|------|
+| John | 30  | NYC  |
+| Jane | 25  | LA   |"
+```
+
 ### ListDocs - View your documents (Resource)
 ```
 "List my recent Google Docs"
@@ -349,19 +359,29 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 
 ### How to Use Effectively
 
-**Step 1: Create**
+**Step 1: Create with markdown table**
 ```
-User: "Create a document called 'Project Plan'"
-AI: Uses CreateDoc → Returns document ID: abc123
+User: "Create a document with a budget table"
+AI: Uses CreateDoc with content including:
+| Item | Cost | Status |
+|------|------|--------|
+| Development | $5000 | Approved |
+| Testing | $2000 | Pending |
 ```
 
 **Step 2: Update**
 ```
-User: "Add section about timeline"
+User: "Add more content"
 AI: Uses UpdateDoc with ID abc123 in append mode
 ```
 
-**Step 3: Format**
+**Step 3: Convert table (optional)**
+```
+User: "Convert the markdown table to a real table"
+AI: Uses ConvertToTable with the markdown table text
+```
+
+**Step 4: Format**
 ```
 User: "Make the headings bold"
 AI: Uses FormatDoc with ID abc123
@@ -370,20 +390,25 @@ AI: Uses FormatDoc with ID abc123
 ### Tips for Success
 - **Keep it simple** - Don't try complex nested structures
 - **Update incrementally** - Add content piece by piece
+- **Tables as text first** - Create markdown tables as text, convert later if needed
 - **Basic formatting only** - Bold, italic, headings work best
 - **Plain text first** - Get content in, then format
 
-## 📝 Version 2.0 Changes
+## 📝 Version History
 
-**Simplified from v1.x:**
-- Removed complex template system
-- Removed markdown conversion 
-- Removed incremental builders
-- Removed table creation (too unreliable)
-- Focus on 4 core tools that always work
+### v2.1.0 (Current)
+- Added markdown table support (rendered as monospace text)
+- Added ConvertToTable tool to optionally convert markdown tables to real tables
+- Removed template system completely
+- Now 5 simple tools instead of 4
 
-**Why the change?**
-Google Docs API has limitations with complex operations. Version 2.0 focuses on simple, reliable tools that work every time rather than complex features that fail unpredictably.
+### v2.0.0
+- Major simplification to just 4 core tools
+- Removed complex features that were unreliable
+- Focus on reliability over features
+
+**Why the simplification?**
+Google Docs API has limitations with complex operations. Version 2.x focuses on simple, reliable tools that work every time rather than complex features that fail unpredictably.
 
 ## 🏢 For Organizations
 

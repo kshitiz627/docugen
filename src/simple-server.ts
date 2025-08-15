@@ -117,15 +117,52 @@ async function initClients(): Promise<boolean> {
 }
 
 // ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Format markdown table as monospace text
+function formatMarkdownTable(text: string): string {
+  // Find markdown tables and add monospace formatting
+  const lines = text.split('\n');
+  const formattedLines: string[] = [];
+  let inTable = false;
+  
+  for (const line of lines) {
+    if (line.includes('|')) {
+      // This looks like a table row
+      if (!inTable) {
+        inTable = true;
+        formattedLines.push('```'); // Start monospace block
+      }
+      formattedLines.push(line);
+    } else if (inTable) {
+      // End of table
+      inTable = false;
+      formattedLines.push('```'); // End monospace block
+      formattedLines.push(line);
+    } else {
+      formattedLines.push(line);
+    }
+  }
+  
+  // Close table if still open
+  if (inTable) {
+    formattedLines.push('```');
+  }
+  
+  return formattedLines.join('\n');
+}
+
+// ============================================================================
 // SIMPLE MCP TOOLS
 // ============================================================================
 
-// 1. CreateDoc - Create a new document with content
+// 1. CreateDoc - Create a new document with content (supports markdown tables as text)
 server.tool(
   "CreateDoc",
   {
     title: z.string().describe("Document title"),
-    content: z.string().optional().describe("Initial content (plain text or simple markdown)")
+    content: z.string().optional().describe("Initial content - plain text or markdown (tables rendered as text)")
   },
   async ({ title, content }) => {
     try {
@@ -148,10 +185,13 @@ server.tool(
       
       // Add content if provided
       if (content) {
+        // Format markdown tables as monospace text
+        const formattedContent = formatMarkdownTable(content);
+        
         const requests = [{
           insertText: {
             location: { index: 1 },
-            text: content
+            text: formattedContent
           }
         }];
         
@@ -431,6 +471,169 @@ server.tool(
       
     } catch (error) {
       console.error("Error formatting document:", error);
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// 5. ConvertToTable - Convert markdown table text to real Google Docs table
+server.tool(
+  "ConvertToTable",
+  {
+    documentId: z.string().describe("Document ID"),
+    tableText: z.string().describe("Markdown table text to convert (with | separators)")
+  },
+  async ({ documentId, tableText }) => {
+    try {
+      if (!docsClient) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ Google API not initialized."
+          }],
+          isError: true
+        };
+      }
+      
+      // Parse markdown table
+      const lines = tableText.trim().split('\n');
+      const rows: string[][] = [];
+      
+      for (const line of lines) {
+        // Skip separator lines (---|---|---)
+        if (line.match(/^\|?[\s\-:|]+\|/)) continue;
+        
+        // Parse cells
+        const cells = line
+          .split('|')
+          .map(cell => cell.trim())
+          .filter(cell => cell !== '');
+        
+        if (cells.length > 0) {
+          rows.push(cells);
+        }
+      }
+      
+      if (rows.length === 0) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No valid table data found"
+          }],
+          isError: true
+        };
+      }
+      
+      // Get document to find where to insert table
+      const doc = await docsClient.documents.get({ documentId });
+      
+      // Find the table text in document
+      let tableStartIndex = -1;
+      let tableEndIndex = -1;
+      
+      if (doc.data.body?.content) {
+        let currentText = "";
+        doc.data.body.content.forEach((element: any) => {
+          if (element.paragraph?.elements) {
+            element.paragraph.elements.forEach((elem: any) => {
+              if (elem.textRun?.content) {
+                const text = elem.textRun.content;
+                const index = text.indexOf(lines[0]);
+                if (index !== -1 && tableStartIndex === -1) {
+                  tableStartIndex = (elem.startIndex || 0) + index;
+                  // Find end of table
+                  const lastLine = lines[lines.length - 1];
+                  const endIndex = text.indexOf(lastLine);
+                  if (endIndex !== -1) {
+                    tableEndIndex = (elem.startIndex || 0) + endIndex + lastLine.length;
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
+      
+      if (tableStartIndex === -1) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ Could not find table text in document"
+          }],
+          isError: true
+        };
+      }
+      
+      // Build requests: delete text, insert table
+      const requests: any[] = [];
+      
+      // Delete the markdown table text
+      if (tableEndIndex > tableStartIndex) {
+        requests.push({
+          deleteContentRange: {
+            range: {
+              startIndex: tableStartIndex,
+              endIndex: tableEndIndex
+            }
+          }
+        });
+      }
+      
+      // Insert real table
+      requests.push({
+        insertTable: {
+          rows: rows.length,
+          columns: rows[0].length,
+          location: { index: tableStartIndex }
+        }
+      });
+      
+      // Apply requests
+      await docsClient.documents.batchUpdate({
+        documentId,
+        requestBody: { requests }
+      });
+      
+      // Now populate the table cells
+      const cellRequests: any[] = [];
+      for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+        for (let colIndex = 0; colIndex < rows[rowIndex].length; colIndex++) {
+          const cellText = rows[rowIndex][colIndex];
+          if (cellText) {
+            // Simple formula for cell index (may need adjustment)
+            const cellIndex = tableStartIndex + 4 + (rowIndex * 5) + (colIndex * 2);
+            cellRequests.push({
+              insertText: {
+                location: { index: cellIndex },
+                text: cellText
+              }
+            });
+          }
+        }
+      }
+      
+      if (cellRequests.length > 0) {
+        await docsClient.documents.batchUpdate({
+          documentId,
+          requestBody: { requests: cellRequests }
+        });
+      }
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Converted markdown table to Google Docs table (${rows.length} rows × ${rows[0].length} columns)`
+        }]
+      };
+      
+    } catch (error) {
+      console.error("Error converting table:", error);
       return {
         content: [{
           type: "text",
