@@ -23,8 +23,16 @@ const SCOPES = [
 
 // Resolve paths relative to the project root
 const PROJECT_ROOT = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), '..'));
-const TOKEN_PATH = path.join(PROJECT_ROOT, "token.json");
+// Each user's token is stored in their home directory to ensure isolation
+const USER_HOME = os.homedir();
+const DOCUGEN_DIR = path.join(USER_HOME, '.docugen');
+const TOKEN_PATH = process.env.TOKEN_PATH || path.join(DOCUGEN_DIR, "token.json");
 const CREDENTIALS_PATH = path.join(PROJECT_ROOT, "credentials.json");
+
+// Ensure user-specific directory exists
+if (!fs.existsSync(DOCUGEN_DIR)) {
+  fs.mkdirSync(DOCUGEN_DIR, { recursive: true });
+}
 
 // Create MCP server instance
 const server = new McpServer({

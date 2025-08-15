@@ -4,6 +4,31 @@
 
 This guide helps IT administrators deploy DocuGen for organizations with Google Workspace, eliminating the need for individual users to configure OAuth.
 
+## How Multi-User Access Works
+
+**Critical Understanding:** When you create ONE OAuth app and share it with 200+ employees, each employee still accesses ONLY their own Google Docs. Here's why:
+
+1. **OAuth App ≠ User Access**
+   - The OAuth app is just the "application identity"
+   - Each user's personal login creates their own access token
+   - Token determines whose documents are accessed
+
+2. **Authentication Flow**
+   ```
+   Shared OAuth App (credentials.json)
+           ↓
+   Employee A logs in → Gets Token A → Sees only A's docs
+   Employee B logs in → Gets Token B → Sees only B's docs
+   Employee C logs in → Gets Token C → Sees only C's docs
+   ```
+
+3. **Security Guaranteed by Google**
+   - Google validates each token against the user who authorized it
+   - Impossible for Employee A to see Employee B's documents
+   - Each token is stored locally on the user's machine
+
+See [How Authentication Works](docs/HOW_AUTH_WORKS.md) for detailed explanation.
+
 ## Deployment Architecture Options
 
 ### 1. Service Account with Domain-Wide Delegation (Recommended)
