@@ -1,0 +1,160 @@
+{
+  "id": "prd",
+  "name": "Product Requirements Document",
+  "description": "Comprehensive PRD template for new features and products",
+  "category": "product-manager",
+  "version": "1.0",
+  "sections": [
+    {
+      "type": "heading",
+      "content": "{{title}}",
+      "level": 1,
+      "style": {
+        "bold": true,
+        "fontSize": 24
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Product Requirements Document",
+      "style": {
+        "italic": true,
+        "alignment": "CENTER"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Author: {{author}}\nDate: {{date}}\nVersion: {{version}}",
+      "style": {
+        "alignment": "RIGHT"
+      }
+    },
+    {
+      "type": "heading",
+      "content": "Executive Summary",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{summary}}",
+      "style": {
+        "alignment": "JUSTIFIED"
+      }
+    },
+    {
+      "type": "heading",
+      "content": "Problem Statement",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{problem_statement}}"
+    },
+    {
+      "type": "heading",
+      "content": "Goals & Success Metrics",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Metric", "Current", "Target", "Measurement"],
+        ["{{metric_1}}", "{{current_1}}", "{{target_1}}", "{{measurement_1}}"],
+        ["{{metric_2}}", "{{current_2}}", "{{target_2}}", "{{measurement_2}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "User Stories",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["As a...", "I want to...", "So that...", "Priority"],
+        ["{{user_type_1}}", "{{user_want_1}}", "{{user_benefit_1}}", "{{priority_1}}"],
+        ["{{user_type_2}}", "{{user_want_2}}", "{{user_benefit_2}}", "{{priority_2}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Requirements",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "heading",
+      "content": "Functional Requirements",
+      "level": 3
+    },
+    {
+      "type": "numbered_list",
+      "items": [
+        "{{functional_req_1}}",
+        "{{functional_req_2}}",
+        "{{functional_req_3}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Non-Functional Requirements",
+      "level": 3
+    },
+    {
+      "type": "bullet_list",
+      "items": [
+        "Performance: {{performance_req}}",
+        "Security: {{security_req}}",
+        "Accessibility: {{accessibility_req}}"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Timeline",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Phase", "Duration", "Deliverables"],
+        ["Design", "{{design_duration}}", "{{design_deliverables}}"],
+        ["Development", "{{dev_duration}}", "{{dev_deliverables}}"],
+        ["Testing", "{{test_duration}}", "{{test_deliverables}}"],
+        ["Launch", "{{launch_date}}", "{{launch_deliverables}}"]
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "Risks & Mitigations",
+      "level": 2,
+      "style": {
+        "bold": true
+      }
+    },
+    {
+      "type": "table",
+      "rows": [
+        ["Risk", "Impact", "Likelihood", "Mitigation"],
+        ["{{risk_1}}", "{{impact_1}}", "{{likelihood_1}}", "{{mitigation_1}}"],
+        ["{{risk_2}}", "{{impact_2}}", "{{likelihood_2}}", "{{mitigation_2}}"]
+      ]
+    }
+  ]
+}
