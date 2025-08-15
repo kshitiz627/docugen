@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { google } from "googleapis";
@@ -200,26 +201,51 @@ const templateManager = new TemplateManager();
 
 async function authorize() {
   try {
-    // Check for credentials file
-    if (!fs.existsSync(CREDENTIALS_PATH)) {
-      console.error("\n⚠️  No credentials.json found!\n");
-      console.error("To set up Google OAuth:");
-      console.error("  1. Go to https://console.cloud.google.com/");
-      console.error("  2. Create a new project (or select existing)");
-      console.error("  3. Enable Google Docs API and Google Drive API");
-      console.error("  4. Create OAuth 2.0 credentials (Desktop app)");
-      console.error("  5. Download and save as credentials.json in the project root\n");
-      console.error("See README.md for detailed instructions.\n");
-      throw new Error("No credentials.json found - please set up Google OAuth");
-    }
+    let clientId: string;
+    let clientSecret: string;
+    let redirectUri: string;
     
-    // Read credentials from file
-    console.error("Reading credentials from:", CREDENTIALS_PATH);
-    const content = fs.readFileSync(CREDENTIALS_PATH, "utf-8");
-    const keys = JSON.parse(content);
-    const clientId = keys.installed.client_id;
-    const clientSecret = keys.installed.client_secret;
-    const redirectUri = keys.installed.redirect_uris[0];
+    // First, check for environment variables (for organizations)
+    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+      console.error("Using OAuth credentials from environment variables");
+      clientId = process.env.GOOGLE_CLIENT_ID;
+      clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+      redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback";
+    } 
+    // Then check for custom path from environment
+    else if (process.env.GOOGLE_OAUTH_PATH) {
+      const customPath = process.env.GOOGLE_OAUTH_PATH;
+      if (!fs.existsSync(customPath)) {
+        throw new Error(`Credentials file not found at: ${customPath}`);
+      }
+      console.error("Reading credentials from:", customPath);
+      const content = fs.readFileSync(customPath, "utf-8");
+      const keys = JSON.parse(content);
+      clientId = keys.installed.client_id;
+      clientSecret = keys.installed.client_secret;
+      redirectUri = keys.installed.redirect_uris[0];
+    }
+    // Finally, check default location
+    else if (fs.existsSync(CREDENTIALS_PATH)) {
+      console.error("Reading credentials from:", CREDENTIALS_PATH);
+      const content = fs.readFileSync(CREDENTIALS_PATH, "utf-8");
+      const keys = JSON.parse(content);
+      clientId = keys.installed.client_id;
+      clientSecret = keys.installed.client_secret;
+      redirectUri = keys.installed.redirect_uris[0];
+    } else {
+      console.error("\n⚠️  No OAuth credentials found!\n");
+      console.error("You have three options:");
+      console.error("\n1. For individuals: Create your own OAuth app");
+      console.error("   - Go to https://console.cloud.google.com/");
+      console.error("   - Follow the guide at: docs/SETUP_OAUTH.md");
+      console.error("\n2. For organizations: Use shared credentials");
+      console.error("   - Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables");
+      console.error("\n3. Specify custom path:");
+      console.error("   - Set GOOGLE_OAUTH_PATH environment variable");
+      console.error("\nSee README.md for detailed instructions.\n");
+      throw new Error("No OAuth credentials configured");
+    }
     
     // Create an OAuth2 client
     const oAuth2Client = new OAuth2Client(clientId, clientSecret, redirectUri);

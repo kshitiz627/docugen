@@ -1,13 +1,17 @@
 {
-    "name": "docugen",
+    "name": "docugen-mcp",
     "version": "1.0.0",
     "description": "DocGen - Google Docs automation with templates and formatting via MCP",
     "main": "build/server.js",
     "type": "module",
+    "bin": {
+      "docugen-mcp": "./build/server.js"
+    },
     "scripts": {
       "build": "tsc",
       "start": "node build/server.js",
       "dev": "tsc -w",
+      "prepublishOnly": "npm run build",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -15,12 +19,26 @@
       "google-docs",
       "document-automation",
       "claude",
+      "cursor",
+      "windsurf",
+      "cline",
       "ai",
       "model-context-protocol",
       "docgen",
       "templates",
       "formatting"
     ],
+    "files": [
+      "build/",
+      "templates/",
+      "README.md",
+      "LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/eagleisbatman/docugen.git"
+    },
+    "homepage": "https://github.com/eagleisbatman/docugen#readme",
     "author": "Gautam Mandewalker",
     "license": "Apache-2.0",
     "dependencies": {
