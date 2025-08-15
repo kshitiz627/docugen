@@ -470,59 +470,84 @@ Think of the OAuth app like your company's email server. Everyone uses the same 
 
 ### 🆘 Enterprise Support
 
-**Common IT Questions:**
+#### For IT Teams
 
-**Q: Can we restrict which employees can use this?**
-A: Yes, use Google Cloud Console to manage OAuth app access by domain or user group.
+**Can we restrict which employees can use this?**  
+Yes. In Google Cloud Console, configure your OAuth consent screen to limit access by domain or specific user groups in your Google Workspace.
 
-**Q: How do we monitor usage?**
-A: Check Google Cloud Console for API usage metrics per OAuth app.
+**How do we monitor usage?**  
+Google Cloud Console provides detailed API usage metrics. Navigate to APIs & Services → Metrics to view request counts, error rates, and quota usage.
 
-**Q: Can employees access shared drives?**
-A: Yes, if they have Google Workspace permissions to those shared drives.
+**Can employees access shared drives?**  
+Yes. Employees can access any shared drives they have permissions for in Google Workspace. DocuGen respects existing Google Drive permissions.
 
-**Q: What if an employee leaves?**
-A: Their local token becomes invalid when their Google account is deactivated. No action needed.
+**What happens when an employee leaves?**  
+No action required. When their Google account is deactivated, their local token automatically becomes invalid and they lose access.
 
-**Employee Troubleshooting:**
+#### For Employees
 
-**"MCP server not found"**
-→ Restart AI assistant completely (quit and reopen)
+**MCP server not appearing in AI assistant**  
+• Completely quit and restart your AI assistant  
+• Verify the configuration was saved correctly  
+• Check that Node.js is installed: run `node --version` in terminal
 
-**"Authentication failed"**
-→ Delete `~/.docugen/token.json` and try again
+**Browser doesn't open for Google sign-in**  
+• Run `npx docugen-mcp` directly in your terminal  
+• Check if your default browser is set correctly  
+• Ensure you're not on a remote/headless system
 
-**"Can't create documents"**
-→ Ensure you signed in with your company Google account, not personal
+**"Authentication failed" error**  
+• Delete the token file: `rm ~/.docugen/token.json` (Mac/Linux) or delete `%USERPROFILE%\.docugen\token.json` (Windows)  
+• Restart your AI assistant and try again  
+• Ensure you're signing in with your company Google account
+
+**Can't see or create documents**  
+• Verify you signed in with your company Google account (not personal)  
+• Check with IT that Google Docs API is enabled  
+• Ensure you have Google Workspace access
 
 ## ❓ Troubleshooting
 
-### Common Issues
+### Configuration Issues
 
-**"No credentials found"**
-- Verify `credentials.json` exists at the specified path
-- Check for typos in the file path
-- Ensure using forward slashes (/) even on Windows
+**No credentials found**  
+• For individual users: Verify `credentials.json` exists at the path specified in GOOGLE_OAUTH_PATH  
+• For enterprise: Check that GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set correctly  
+• Use forward slashes (/) in paths, even on Windows
 
-**"APIs not enabled"**
-- Return to Google Cloud Console
-- Verify both Google Docs API and Drive API show "Enabled"
-- Make sure you're in the correct project
+**APIs not enabled**  
+• Go to Google Cloud Console → APIs & Services → Library  
+• Search for "Google Docs API" and "Google Drive API"  
+• Ensure both show "API Enabled" with a green checkmark
 
-**MCP server not appearing**
-- Completely quit and restart your AI assistant
-- Validate JSON syntax in configuration file
-- Check file permissions on credentials.json
+**MCP server not appearing**  
+• Quit your AI assistant completely (not just close the window)  
+• Validate JSON syntax using a JSON validator  
+• Check file permissions: the config file should be readable
 
-**Browser doesn't open for authentication**
-- Run `npx docugen-mcp` directly in terminal
-- Check default browser settings
-- Ensure not running in headless environment
+### Authentication Issues
 
-**"Token expired or revoked"**
-- Delete `~/.docugen/token.json`
-- Restart AI assistant to re-authenticate
-- Check if OAuth app is still active in Google Cloud Console
+**Browser doesn't open for sign-in**  
+• Try running `npx docugen-mcp` directly in terminal to test  
+• Check your default browser is set in system settings  
+• For remote systems, you'll need to use credentials.json method
+
+**Token expired or revoked**  
+• Delete the token file: `~/.docugen/token.json`  
+• Restart your AI assistant to trigger re-authentication  
+• Verify the OAuth app is still active in Google Cloud Console
+
+### Runtime Issues
+
+**Can't create or access documents**  
+• Ensure you're signed in with the correct Google account  
+• Verify you have edit permissions for Google Docs  
+• Check quota limits in Google Cloud Console (free tier: 60 requests/minute)
+
+**"Permission denied" errors**  
+• For shared drives: verify you have access in Google Drive  
+• For personal docs: ensure you're the owner or have edit access  
+• Check OAuth consent screen includes required scopes
 
 ## 🌟 Features
 
@@ -555,7 +580,6 @@ Apache License 2.0 - Free for personal and commercial use
 🔗 **Connect:**
 - GitHub: [@eagleisbatman](https://github.com/eagleisbatman)
 - LinkedIn: [Gautam Mandewalker](https://www.linkedin.com/in/gautammandewalker/)
-- Email: support@docugen.dev
 
 ---
 
