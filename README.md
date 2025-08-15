@@ -350,37 +350,150 @@ Simply ask: "Create a [template name] for [your topic]"
 
 ## 🏢 For Organizations
 
-Deploying DocuGen for your team is simple and secure.
+Deploy DocuGen for your entire team with one simple setup. Each employee maintains private access to their own documents.
 
-### IT Setup (10 minutes)
+### 👔 What IT Team Does (One-time, 15 minutes)
 
-1. **Create ONE OAuth App**
-   - Follow Step 1 from the Setup Guide above
-   - Note the CLIENT_ID and CLIENT_SECRET from your OAuth app
+#### 1. Create Google OAuth App
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create new project: "DocuGen for [Company Name]"
+3. Enable APIs:
+   - Google Docs API
+   - Google Drive API
+4. Configure OAuth consent screen:
+   - Type: Internal (for Google Workspace) or External
+   - App name: "DocuGen - [Company Name]"
+   - Add your company domain to authorized domains
+5. Create OAuth credentials:
+   - Type: Desktop application
+   - Name: "DocuGen Desktop"
+6. Download and save the CLIENT_ID and CLIENT_SECRET
 
-2. **Share with Employees**
-   ```
-   Subject: DocuGen - AI Document Creation Tool
-   
-   Setup Instructions:
-   1. Install Node.js from https://nodejs.org (if not installed)
-   2. Copy the configuration below to your AI assistant
-   3. Replace GOOGLE_OAUTH_PATH with:
-      - GOOGLE_CLIENT_ID: "your-company.apps.googleusercontent.com"
-      - GOOGLE_CLIENT_SECRET: "your-company-secret"
-   4. Restart your AI assistant
-   5. On first use, sign in with your company Google account
-   ```
+#### 2. Prepare Employee Configuration
+Create a configuration template with your company's OAuth credentials:
 
-### Security & Privacy
+```json
+{
+  "mcpServers": {
+    "docugen": {
+      "command": "npx",
+      "args": ["docugen-mcp"],
+      "env": {
+        "GOOGLE_CLIENT_ID": "123456789-abc.apps.googleusercontent.com",
+        "GOOGLE_CLIENT_SECRET": "GOCSPX-YourCompanySecret"
+      }
+    }
+  }
+}
+```
 
-**How it works:** The OAuth app is just DocuGen's identity. Each employee:
-1. Uses the shared OAuth credentials
-2. Logs in with their personal Google account
-3. Gets their own access token (stored locally)
-4. Can only access their own documents
+#### 3. Send Instructions to Employees
+```
+Subject: DocuGen Setup - AI Document Assistant Ready
 
-**Think of it like:** A building's keycard system - same card printer (OAuth app), but each person's card (token) only opens their office.
+Hello Team,
+
+We've set up DocuGen to help you create Google Docs directly from your AI assistant.
+Setup takes just 2 minutes:
+
+PREREQUISITES:
+- Install Node.js from https://nodejs.org (LTS version)
+- Have your AI assistant installed (Claude, Cursor, Windsurf, etc.)
+
+SETUP STEPS:
+1. Copy the configuration below
+2. Paste it into your AI assistant's config file (see locations below)
+3. Restart your AI assistant completely
+4. Test by asking: "Create a new Google Doc called Test"
+5. Sign in with your company Google account when prompted (first time only)
+
+[Include the JSON configuration here]
+
+CONFIG FILE LOCATIONS:
+- Claude Desktop: ~/Library/Application Support/Claude/claude_desktop_config.json (Mac)
+                 %APPDATA%\Claude\claude_desktop_config.json (Windows)
+- Cursor: ~/.cursor/mcp.json
+- Windsurf: ~/.codeium/windsurf/mcp_config.json
+- See full list: https://github.com/eagleisbatman/docugen#supported-ai-assistants
+
+Need help? Contact IT Support
+```
+
+### 👩‍💼 What Each Employee Does (One-time, 2 minutes)
+
+#### Step 1: Install Prerequisites
+- **Node.js**: Download from [nodejs.org](https://nodejs.org) if not installed
+- **AI Assistant**: Claude Desktop, Cursor, Windsurf, or other MCP-compatible client
+
+#### Step 2: Add Configuration
+1. Open your AI assistant's configuration file:
+   - **Mac Claude**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows Claude**: `%APPDATA%\Claude\claude_desktop_config.json`
+   - **Other assistants**: See documentation above
+2. Paste the configuration provided by IT
+3. Save the file
+
+#### Step 3: Start Using
+1. Completely restart your AI assistant (quit and reopen)
+2. Test: "Create a new Google Doc called Team Meeting Notes"
+3. First time: Browser opens → Sign in with your company Google account
+4. Done! Your AI can now create and manage your Google Docs
+
+### 🔒 Security & Privacy Explained
+
+**For IT Teams:**
+- OAuth app acts as the application identifier only
+- No service accounts or shared drives needed
+- Each user's token is stored locally on their machine
+- Tokens are isolated per user in `~/.docugen/token.json`
+- No central storage or logging of user documents
+
+**For Employees:**
+- You sign in with YOUR Google account
+- You see only YOUR documents
+- Your access token stays on YOUR computer
+- Even though everyone uses the same OAuth app, each person's login determines their access
+
+**Simple Analogy:** 
+Think of the OAuth app like your company's email server. Everyone uses the same email server (OAuth app), but each person logs in with their own credentials and can only see their own emails (documents).
+
+### 📊 Deployment Checklist for IT
+
+- [ ] Created Google Cloud project
+- [ ] Enabled Google Docs and Drive APIs
+- [ ] Created OAuth 2.0 credentials (Desktop app)
+- [ ] Saved CLIENT_ID and CLIENT_SECRET
+- [ ] Created configuration template for employees
+- [ ] Sent setup instructions to team
+- [ ] Tested with one pilot user
+- [ ] Rolled out to all employees
+
+### 🆘 Enterprise Support
+
+**Common IT Questions:**
+
+**Q: Can we restrict which employees can use this?**
+A: Yes, use Google Cloud Console to manage OAuth app access by domain or user group.
+
+**Q: How do we monitor usage?**
+A: Check Google Cloud Console for API usage metrics per OAuth app.
+
+**Q: Can employees access shared drives?**
+A: Yes, if they have Google Workspace permissions to those shared drives.
+
+**Q: What if an employee leaves?**
+A: Their local token becomes invalid when their Google account is deactivated. No action needed.
+
+**Employee Troubleshooting:**
+
+**"MCP server not found"**
+→ Restart AI assistant completely (quit and reopen)
+
+**"Authentication failed"**
+→ Delete `~/.docugen/token.json` and try again
+
+**"Can't create documents"**
+→ Ensure you signed in with your company Google account, not personal
 
 ## ❓ Troubleshooting
 
