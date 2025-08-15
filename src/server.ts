@@ -10,6 +10,7 @@ import * as os from "os";
 import * as process from "process";
 import { z } from "zod";
 import { docs_v1, drive_v3 } from "googleapis";
+import { IncrementalDocumentBuilder } from "./incremental.js";
 
 // Handle command line arguments
 if (process.argv.includes('--version') || process.argv.includes('-v')) {
@@ -235,6 +236,7 @@ async function authorize() {
     let clientId: string;
     let clientSecret: string;
     let redirectUri: string;
+    let credentialsPath: string = CREDENTIALS_PATH;
     
     // First, check for environment variables (for organizations)
     if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -245,12 +247,12 @@ async function authorize() {
     } 
     // Then check for custom path from environment
     else if (process.env.GOOGLE_OAUTH_PATH) {
-      const customPath = process.env.GOOGLE_OAUTH_PATH;
-      if (!fs.existsSync(customPath)) {
-        throw new Error(`Credentials file not found at: ${customPath}`);
+      credentialsPath = process.env.GOOGLE_OAUTH_PATH;
+      if (!fs.existsSync(credentialsPath)) {
+        throw new Error(`Credentials file not found at: ${credentialsPath}`);
       }
-      console.error("Reading credentials from:", customPath);
-      const content = fs.readFileSync(customPath, "utf-8");
+      console.error("Reading credentials from:", credentialsPath);
+      const content = fs.readFileSync(credentialsPath, "utf-8");
       const keys = JSON.parse(content);
       clientId = keys.installed.client_id;
       clientSecret = keys.installed.client_secret;
@@ -293,7 +295,7 @@ async function authorize() {
     console.error("No token found, starting OAuth flow...");
     const client = await authenticate({
       scopes: SCOPES,
-      keyfilePath: CREDENTIALS_PATH,
+      keyfilePath: credentialsPath,
     });
     
     if (client.credentials) {
@@ -343,6 +345,10 @@ server.tool(
   },
   async ({ title, content = "" }) => {
     try {
+      if (!docsClient) {
+        throw new Error("Google Docs API not initialized - check OAuth setup");
+      }
+      
       const doc = await docsClient.documents.create({
         requestBody: { title },
       });
@@ -394,37 +400,45 @@ server.tool(
     try {
       const doc = await docsClient.documents.get({ documentId: docId });
       
-      let documentLength = 1;
-      if (doc.data.body && doc.data.body.content) {
-        doc.data.body.content.forEach((element: any) => {
-          if (element.paragraph) {
-            element.paragraph.elements.forEach((paragraphElement: any) => {
-              if (paragraphElement.textRun && paragraphElement.textRun.content) {
-                documentLength += paragraphElement.textRun.content.length;
-              }
-            });
-          }
-        });
+      // Get the actual end index from the document
+      const body = doc.data.body;
+      let endIndex = 1; // Default for empty doc
+      
+      if (body && body.content && body.content.length > 0) {
+        // Get the end index of the last content element
+        const lastElement = body.content[body.content.length - 1];
+        endIndex = lastElement.endIndex || 1;
       }
       
-      const requests = replaceAll ? [
-        {
-          deleteContentRange: {
-            range: { startIndex: 1, endIndex: documentLength },
-          },
-        },
-        {
+      const requests = [];
+      
+      if (replaceAll) {
+        // Only delete if there's content to delete (more than just the newline)
+        if (endIndex > 1) {
+          requests.push({
+            deleteContentRange: {
+              range: { 
+                startIndex: 1, 
+                endIndex: endIndex - 1  // Don't delete the final newline
+              },
+            },
+          });
+        }
+        requests.push({
           insertText: {
             location: { index: 1 },
             text: content,
           },
-        },
-      ] : [{
-        insertText: {
-          location: { index: documentLength },
-          text: content,
-        },
-      }];
+        });
+      } else {
+        // Append: insert before the final newline
+        requests.push({
+          insertText: {
+            location: { index: Math.max(1, endIndex - 1) },
+            text: content,
+          },
+        });
+      }
       
       await docsClient.documents.batchUpdate({
         documentId: docId,
@@ -643,7 +657,7 @@ server.tool(
           green: z.number().optional(),
           blue: z.number().optional()
         }).optional(),
-        alignment: z.enum(["LEFT", "CENTER", "RIGHT", "JUSTIFIED"]).optional()
+        alignment: z.enum(["START", "CENTER", "END", "JUSTIFIED"]).optional()
       }).optional()
     }))
   },
@@ -657,7 +671,12 @@ server.tool(
       const requests: any[] = [];
       let currentIndex = 1;
       
-      for (const section of sections) {
+      // Reorganize sections: put all tables at the end for better index management
+      const textSections = sections.filter(s => s.type !== 'table');
+      const tableSections = sections.filter(s => s.type === 'table');
+      const reorganizedSections = [...textSections, ...tableSections];
+      
+      for (const section of reorganizedSections) {
         switch (section.type) {
           case "heading":
             const headingText = section.content + "\n";
@@ -779,26 +798,15 @@ server.tool(
             
           case "table":
             if (section.rows && section.rows.length > 0) {
-              const numRows = section.rows.length;
-              const numCols = section.rows[0].length;
-              
-              requests.push({
-                insertTable: {
-                  location: { index: currentIndex },
-                  rows: numRows,
-                  columns: numCols
-                }
-              });
-              
-              currentIndex += (numRows * numCols * 2) + 2;
-              
+              // Skip actual table creation - just show content as formatted text
+              const tableContent = `\n╔═══ Table ═══╗\n${section.rows.map(row => row.join(' | ')).join('\n')}\n╚═════════════╝\n\n`;
               requests.push({
                 insertText: {
                   location: { index: currentIndex },
-                  text: "\n"
+                  text: tableContent
                 }
               });
-              currentIndex += 1;
+              currentIndex += tableContent.length;
             }
             break;
         }
@@ -977,10 +985,188 @@ server.tool(
       const requests: any[] = [];
       let currentIndex = 1;
       
+      // Reorganize sections: put all tables at the end for better index management
+      const textSections = processedSections.filter((s: any) => s.type !== 'table');
+      const tableSections = processedSections.filter((s: any) => s.type === 'table');
+      const reorganizedSections = [...textSections, ...tableSections];
+      
       // Process each section
-      for (const section of processedSections) {
-        // Similar processing as in create-formatted-doc
-        // (Implementation details would be same as lines 590-734)
+      for (const section of reorganizedSections) {
+        switch (section.type) {
+          case "heading":
+            const headingText = section.content + "\n";
+            requests.push({
+              insertText: {
+                location: { index: currentIndex },
+                text: headingText
+              }
+            });
+            
+            requests.push({
+              updateParagraphStyle: {
+                range: {
+                  startIndex: currentIndex,
+                  endIndex: currentIndex + headingText.length
+                },
+                paragraphStyle: {
+                  namedStyleType: `HEADING_${section.level || 1}`
+                },
+                fields: "namedStyleType"
+              }
+            });
+            
+            if (section.style) {
+              const textStyle = buildTextStyle(section.style);
+              if (Object.keys(textStyle.style).length > 0) {
+                requests.push({
+                  updateTextStyle: {
+                    range: {
+                      startIndex: currentIndex,
+                      endIndex: currentIndex + headingText.length - 1
+                    },
+                    textStyle: textStyle.style,
+                    fields: textStyle.fields
+                  }
+                });
+              }
+            }
+            
+            currentIndex += headingText.length;
+            break;
+            
+          case "paragraph":
+            const paragraphText = section.content + "\n\n";
+            requests.push({
+              insertText: {
+                location: { index: currentIndex },
+                text: paragraphText
+              }
+            });
+            
+            if (section.style) {
+              const textStyle = buildTextStyle(section.style);
+              if (Object.keys(textStyle.style).length > 0) {
+                requests.push({
+                  updateTextStyle: {
+                    range: {
+                      startIndex: currentIndex,
+                      endIndex: currentIndex + paragraphText.length - 2
+                    },
+                    textStyle: textStyle.style,
+                    fields: textStyle.fields
+                  }
+                });
+              }
+              
+              if (section.style.alignment) {
+                requests.push({
+                  updateParagraphStyle: {
+                    range: {
+                      startIndex: currentIndex,
+                      endIndex: currentIndex + paragraphText.length
+                    },
+                    paragraphStyle: {
+                      alignment: section.style.alignment
+                    },
+                    fields: "alignment"
+                  }
+                });
+              }
+            }
+            
+            currentIndex += paragraphText.length;
+            break;
+            
+          case "bullet_list":
+          case "numbered_list":
+            const listStartIndex = currentIndex;
+            for (const item of section.items || []) {
+              requests.push({
+                insertText: {
+                  location: { index: currentIndex },
+                  text: item + "\n"
+                }
+              });
+              currentIndex += item.length + 1;
+            }
+            
+            requests.push({
+              createParagraphBullets: {
+                range: {
+                  startIndex: listStartIndex,
+                  endIndex: currentIndex
+                },
+                bulletPreset: section.type === "bullet_list" 
+                  ? "BULLET_DISC_CIRCLE_SQUARE" 
+                  : "NUMBERED_DECIMAL_NESTED"
+              }
+            });
+            
+            requests.push({
+              insertText: {
+                location: { index: currentIndex },
+                text: "\n"
+              }
+            });
+            currentIndex += 1;
+            break;
+            
+          case "table":
+            if (section.rows && section.rows.length > 0) {
+              const numRows = section.rows.length;
+              const numCols = section.rows[0].length;
+              
+              // Insert the table structure
+              requests.push({
+                insertTable: {
+                  location: { index: currentIndex },
+                  rows: numRows,
+                  columns: numCols
+                }
+              });
+              
+              // Calculate and populate cell content
+              // First cell at tableIndex + 4, cols +2, rows +5
+              const cellInserts = [];
+              
+              for (let row = 0; row < numRows; row++) {
+                for (let col = 0; col < numCols; col++) {
+                  const cellContent = section.rows[row][col] || "";
+                  if (cellContent) {
+                    const cellIdx = currentIndex + 4 + (row * 5) + (col * 2);
+                    cellInserts.push({
+                      index: cellIdx,
+                      text: cellContent
+                    });
+                  }
+                }
+              }
+              
+              // Add cell content in reverse order to maintain indexes
+              cellInserts.reverse().forEach(insert => {
+                requests.push({
+                  insertText: {
+                    location: { index: insert.index },
+                    text: insert.text
+                  }
+                });
+              });
+              
+              // Update currentIndex to after the table
+              // Approximate: table structure takes ~2 chars per cell + padding
+              currentIndex += (numRows * numCols * 2) + 4;
+              
+              // Add spacing after table
+              requests.push({
+                insertText: {
+                  location: { index: currentIndex },
+                  text: "\n"
+                }
+              });
+              currentIndex += 1;
+            }
+            break;
+        }
       }
       
       if (requests.length > 0) {
@@ -1222,6 +1408,353 @@ server.tool(
 );
 
 // ============================================================================
+// INCREMENTAL DOCUMENT BUILDING
+// ============================================================================
+
+let incrementalBuilder: IncrementalDocumentBuilder | null = null;
+
+// Initialize incremental builder after clients are ready
+function initIncrementalBuilder() {
+  if (docsClient) {
+    incrementalBuilder = new IncrementalDocumentBuilder(docsClient);
+    return true;
+  }
+  return false;
+}
+
+// Start a new document session
+server.tool(
+  "start-doc-session",
+  {
+    title: z.string().describe("Document title")
+  },
+  async ({ title }) => {
+    try {
+      if (!incrementalBuilder && !initIncrementalBuilder()) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ Google API not initialized. Please check credentials."
+          }],
+          isError: true
+        };
+      }
+      
+      const session = await incrementalBuilder!.createSession(title);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Document session started\nTitle: ${session.title}\nID: ${session.documentId}\n\nUse this ID for incremental operations.`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// Add text incrementally
+server.tool(
+  "add-doc-text",
+  {
+    documentId: z.string().describe("Document ID from session"),
+    text: z.string().describe("Text to add"),
+    formatting: z.object({
+      bold: z.boolean().optional(),
+      italic: z.boolean().optional(),
+      underline: z.boolean().optional(),
+      fontSize: z.number().optional()
+    }).optional().describe("Text formatting")
+  },
+  async ({ documentId, text, formatting }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      await incrementalBuilder.addText(documentId, text, formatting);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Added ${text.length} characters to document`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// Add heading incrementally
+server.tool(
+  "add-doc-heading",
+  {
+    documentId: z.string().describe("Document ID from session"),
+    text: z.string().describe("Heading text"),
+    level: z.number().min(1).max(3).optional().describe("Heading level (1-3)")
+  },
+  async ({ documentId, text, level = 1 }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      await incrementalBuilder.addHeading(documentId, text, level);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Added level ${level} heading: "${text}"`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// Add list incrementally
+server.tool(
+  "add-doc-list",
+  {
+    documentId: z.string().describe("Document ID from session"),
+    items: z.array(z.string()).describe("List items"),
+    numbered: z.boolean().optional().describe("Use numbered list (default: bullet)")
+  },
+  async ({ documentId, items, numbered = false }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      await incrementalBuilder.addList(documentId, items, numbered);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Added ${numbered ? 'numbered' : 'bullet'} list with ${items.length} items`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// Add table incrementally (at end of document)
+server.tool(
+  "add-doc-table",
+  {
+    documentId: z.string().describe("Document ID from session"),
+    rows: z.array(z.array(z.string())).describe("Table rows"),
+    label: z.string().optional().describe("Table label/title")
+  },
+  async ({ documentId, rows, label }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      await incrementalBuilder.addTable(documentId, rows, label);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Added table with ${rows.length} rows and ${rows[0]?.length || 0} columns${label ? ` (${label})` : ''}`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// Get document state
+server.tool(
+  "get-doc-state",
+  {
+    documentId: z.string().describe("Document ID from session")
+  },
+  async ({ documentId }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      const state = await incrementalBuilder.getDocumentState(documentId);
+      
+      const sectionSummary = state.sections.map(s => 
+        `• ${s.type} (${s.startIndex}-${s.endIndex})`
+      ).join('\n');
+      
+      return {
+        content: [{
+          type: "text",
+          text: `📄 Document State\n\nCurrent Index: ${state.currentIndex}\nContent Length: ${state.content.length} chars\n\nSections:\n${sectionSummary || 'No sections yet'}\n\nPreview (first 200 chars):\n${state.content.substring(0, 200)}${state.content.length > 200 ? '...' : ''}`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// List active sessions
+server.tool(
+  "list-doc-sessions",
+  {},
+  async () => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      const sessions = incrementalBuilder.getActiveSessions();
+      
+      if (sessions.length === 0) {
+        return {
+          content: [{
+            type: "text",
+            text: "No active document sessions"
+          }]
+        };
+      }
+      
+      const sessionList = sessions.map(s => 
+        `• ${s.title}\n  ID: ${s.documentId}\n  Modified: ${s.lastModified.toISOString()}`
+      ).join('\n\n');
+      
+      return {
+        content: [{
+          type: "text",
+          text: `Active Document Sessions:\n\n${sessionList}`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// End document session
+server.tool(
+  "end-doc-session",
+  {
+    documentId: z.string().describe("Document ID to end session for")
+  },
+  async ({ documentId }) => {
+    try {
+      if (!incrementalBuilder) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ No incremental builder initialized"
+          }],
+          isError: true
+        };
+      }
+      
+      incrementalBuilder.clearSession(documentId);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Session ended for document ${documentId}`
+        }]
+      };
+    } catch (error) {
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
+// ============================================================================
 // RESOURCES (Read-only operations)
 // ============================================================================
 
@@ -1380,10 +1913,24 @@ function replacePlaceholders(text: string, data: any): string {
 // ============================================================================
 
 async function main() {
+  // Initialize Google API clients before starting the server
+  const initialized = await initClients();
+  
+  if (!initialized) {
+    console.error("❌ Failed to initialize Google API clients!");
+    console.error("The server will run but document operations will fail.");
+    console.error("Check your OAuth credentials and try again.");
+    // Continue anyway to allow MCP connection, but operations will fail
+  }
+  
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("DocGen MCP Server running");
   console.error(`Templates loaded from: ${templateManager.getStorageInfo().userPath}`);
+  
+  if (!initialized) {
+    console.error("⚠️  WARNING: Google API not initialized - document operations will fail!");
+  }
 }
 
 main().catch((error) => {

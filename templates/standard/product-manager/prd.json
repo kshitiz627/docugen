@@ -26,7 +26,7 @@
       "type": "paragraph",
       "content": "Author: {{author}}\nDate: {{date}}\nVersion: {{version}}",
       "style": {
-        "alignment": "RIGHT"
+        "alignment": "END"
       }
     },
     {

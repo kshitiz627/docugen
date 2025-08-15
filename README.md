@@ -336,6 +336,36 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 "Generate a business case with financial tables"
 ```
 
+### 🔄 NEW: Incremental Document Building
+DocuGen now supports incremental document creation, allowing you to build documents step-by-step for better control and reliability:
+
+```
+"Start a new document session called 'Project Proposal'"
+"Add a heading 'Executive Summary'"
+"Add a paragraph about our project goals"
+"Now add a table with budget breakdown"
+"Add another section called 'Timeline'"
+"Show me the current document state"
+"End the document session"
+```
+
+**Incremental Approach Benefits:**
+- **Better Control:** Build documents piece by piece
+- **Improved Reliability:** Each operation is independent
+- **Real-time Feedback:** Check document state at any time
+- **Flexible Workflow:** Add, modify, and organize content iteratively
+- **Complex Tables:** Add tables one at a time for better success
+
+**Available Incremental Commands:**
+- `start-doc-session` - Begin a new document session
+- `add-doc-text` - Add formatted text
+- `add-doc-heading` - Add headings (levels 1-3)
+- `add-doc-list` - Add bullet or numbered lists
+- `add-doc-table` - Add tables (automatically placed at optimal position)
+- `get-doc-state` - View current document content and structure
+- `list-doc-sessions` - See all active sessions
+- `end-doc-session` - Close a session when done
+
 ## 📑 Available Templates
 
 DocuGen includes professional templates ready to use:
