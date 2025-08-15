@@ -1,348 +1,112 @@
 # Enterprise Deployment Guide
 
-## Overview
+## Simple Setup for Organizations
 
-This guide helps IT administrators deploy DocuGen for organizations with Google Workspace, eliminating the need for individual users to configure OAuth.
+### What IT Needs to Do (One-time, 10 minutes)
 
-## How Multi-User Access Works
+1. **Create OAuth App in Google Cloud**
+   - Go to [Google Cloud Console](https://console.cloud.google.com)
+   - Create new project called "Company DocuGen"
+   - Enable Google Docs API and Google Drive API
+   - Create OAuth credentials (Desktop app type)
+   - Download credentials.json
 
-**Critical Understanding:** When you create ONE OAuth app and share it with 200+ employees, each employee still accesses ONLY their own Google Docs. Here's why:
-
-1. **OAuth App ≠ User Access**
-   - The OAuth app is just the "application identity"
-   - Each user's personal login creates their own access token
-   - Token determines whose documents are accessed
-
-2. **Authentication Flow**
+2. **Share with Employees**
+   
+   Send this email to all employees:
    ```
-   Shared OAuth App (credentials.json)
-           ↓
-   Employee A logs in → Gets Token A → Sees only A's docs
-   Employee B logs in → Gets Token B → Sees only B's docs
-   Employee C logs in → Gets Token C → Sees only C's docs
-   ```
-
-3. **Security Guaranteed by Google**
-   - Google validates each token against the user who authorized it
-   - Impossible for Employee A to see Employee B's documents
-   - Each token is stored locally on the user's machine
-
-See [How Authentication Works](docs/HOW_AUTH_WORKS.md) for detailed explanation.
-
-## Deployment Architecture Options
-
-### 1. Service Account with Domain-Wide Delegation (Recommended)
-
-**Best for:** Organizations with Google Workspace
-
-#### Setup Steps for IT Administrators:
-
-1. **Create Service Account**
-   ```bash
-   # In Google Cloud Console
-   - Go to IAM & Admin > Service Accounts
-   - Create new service account
-   - Name: "DocuGen MCP Service"
-   - Grant domain-wide delegation
-   ```
-
-2. **Configure Domain-Wide Delegation**
-   - Go to Google Workspace Admin Console
-   - Security > API Controls > Domain-wide delegation
-   - Add service account with scopes:
-     - `https://www.googleapis.com/auth/documents`
-     - `https://www.googleapis.com/auth/drive`
-
-3. **Deploy Centralized Server**
-   ```javascript
-   // server-config.js
-   module.exports = {
-     serviceAccount: './service-account-key.json',
-     domain: 'yourcompany.com',
-     impersonateUser: true
-   };
-   ```
-
-4. **User Configuration**
-   ```json
-   // Distribute this config to users
+   Subject: DocuGen Setup - Google Docs AI Assistant
+   
+   1. Install Node.js from https://nodejs.org (if not installed)
+   
+   2. Copy this configuration to your AI client:
+   
+   For Claude Desktop:
+   Location: ~/Library/Application Support/Claude/claude_desktop_config.json (Mac)
+            %APPDATA%\Claude\claude_desktop_config.json (Windows)
+   
    {
      "mcpServers": {
        "docugen": {
          "command": "npx",
-         "args": ["@yourcompany/docugen-mcp"],
+         "args": ["docugen-mcp"],
          "env": {
-           "DOCUGEN_SERVER": "https://mcp.yourcompany.com"
+           "GOOGLE_CLIENT_ID": "YOUR_COMPANY_ID.apps.googleusercontent.com",
+           "GOOGLE_CLIENT_SECRET": "YOUR_COMPANY_SECRET"
          }
        }
      }
    }
+   
+   3. Restart your AI client
+   
+   4. First use: Browser will open - sign in with your Google account
+   
+   Done! You can now create Google Docs with AI.
    ```
 
-### 2. NPM Private Package Distribution
+### What Each Employee Does (One-time, 2 minutes)
 
-**Best for:** Organizations with private NPM registry
+1. Copy the configuration above
+2. Paste into their AI client config file
+3. Restart the AI client
+4. Use DocuGen - browser opens once for Google login
+5. That's it!
 
-#### Create NPM Package:
+## How It Works (Simple Explanation)
 
-1. **Package Structure**
-   ```
-   docugen-enterprise/
-   ├── package.json
-   ├── index.js
-   ├── config/
-   │   └── oauth-config.json (embedded)
-   └── scripts/
-       └── setup.js
-   ```
-
-2. **package.json**
-   ```json
-   {
-     "name": "@yourcompany/docugen-mcp",
-     "version": "1.0.0",
-     "private": true,
-     "bin": {
-       "docugen-setup": "./scripts/setup.js"
-     },
-     "scripts": {
-       "postinstall": "node scripts/setup.js"
-     }
-   }
-   ```
-
-3. **Auto-Setup Script**
-   ```javascript
-   // scripts/setup.js
-   const fs = require('fs');
-   const os = require('os');
-   const path = require('path');
-
-   function setupClaude() {
-     const configPath = os.platform() === 'win32' 
-       ? path.join(process.env.APPDATA, 'Claude', 'claude_desktop_config.json')
-       : path.join(os.homedir(), 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
-     
-     const config = {
-       mcpServers: {
-         docugen: {
-           command: "node",
-           args: [path.join(__dirname, '..', 'index.js')]
-         }
-       }
-     };
-     
-     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-     console.log('✅ DocuGen configured for Claude Desktop');
-   }
-
-   setupClaude();
-   ```
-
-4. **Deployment**
-   ```bash
-   # Publish to private registry
-   npm publish --registry https://npm.yourcompany.com
-
-   # Users install with one command
-   npm install -g @yourcompany/docugen-mcp
-   ```
-
-### 3. Desktop Application Installer
-
-**Best for:** Non-technical users
-
-#### Windows Installer (using Electron + NSIS):
-
-```javascript
-// installer-config.js
-const { MSICreator } = require('electron-wix-msi');
-
-const msiCreator = new MSICreator({
-  appDirectory: '/path/to/built/app',
-  outputDirectory: '/path/to/output',
-  description: 'DocuGen MCP for Claude',
-  exe: 'docugen-setup',
-  name: 'DocuGen MCP',
-  manufacturer: 'Your Company',
-  version: '1.0.0',
-  ui: {
-    chooseDirectory: false
-  }
-});
-
-// Creates docugen-setup.msi
-await msiCreator.create();
+```
+Company OAuth App (shared CLIENT_ID and SECRET)
+        ↓
+Employee A logs in with their Google → Sees only A's docs
+Employee B logs in with their Google → Sees only B's docs
 ```
 
-#### macOS Installer:
+- **OAuth App** = Like a company badge printer
+- **Login** = Your personal badge with your photo
+- **Result** = Everyone uses same printer, but each badge only opens your doors
 
-```bash
-# Create .pkg installer
-pkgbuild --root ./docugen \
-         --scripts ./scripts \
-         --identifier com.yourcompany.docugen \
-         --version 1.0.0 \
-         --install-location /Applications/DocuGen \
-         DocuGen.pkg
-```
+## Security FAQ
 
-## Enterprise Configuration Examples
+**Q: Can Employee A see Employee B's documents?**  
+A: No. Each person logs in with their own Google account and only sees their own documents.
 
-### 1. Shared OAuth App Configuration
+**Q: Is it safe to share CLIENT_ID and SECRET internally?**  
+A: Yes. These just identify your company's app. Each employee's login determines what they can access.
 
-```javascript
-// enterprise-oauth.js
-const { google } = require('googleapis');
+**Q: Where are tokens stored?**  
+A: On each employee's local computer in their home directory. Never shared.
 
-class EnterpriseAuth {
-  constructor() {
-    this.oauth2Client = new google.auth.OAuth2(
-      process.env.ENTERPRISE_CLIENT_ID,
-      process.env.ENTERPRISE_CLIENT_SECRET,
-      'https://auth.yourcompany.com/callback'
-    );
-  }
+## For Different AI Clients
 
-  async authenticateUser(email) {
-    // Use company SSO to verify user
-    // Return pre-authorized tokens
-    return this.getStoredTokens(email);
-  }
-}
-```
+### Cursor
+File: `~/.cursor/mcp.json` (Mac/Linux) or `C:\Users\[Username]\.cursor\mcp.json` (Windows)
 
-### 2. Centralized Template Management
+### Windsurf  
+File: `~/.codeium/windsurf/mcp_config.json`
 
-```javascript
-// template-server.js
-const express = require('express');
-const app = express();
+### Cline
+File: See [SETUP_CLINE.md](./SETUP_CLINE.md) for paths
 
-app.get('/templates', authenticate, (req, res) => {
-  // Serve company-approved templates
-  res.json({
-    templates: [
-      'company-prd',
-      'company-tech-spec',
-      'quarterly-report',
-      'board-presentation'
-    ]
-  });
-});
-```
+## Troubleshooting
 
-### 3. Usage Monitoring
+**"No credentials found"**
+- Check that CLIENT_ID and CLIENT_SECRET are copied correctly
+- Make sure there are no extra spaces
 
-```javascript
-// monitoring.js
-class UsageMonitor {
-  logDocumentCreation(user, templateId, docId) {
-    // Track usage for compliance
-    this.analytics.track({
-      event: 'document_created',
-      user: user.email,
-      template: templateId,
-      timestamp: new Date()
-    });
-  }
-}
-```
+**Browser doesn't open**
+- Try running `npx docugen-mcp` directly in terminal
+- Check if default browser is set
 
-## Security Considerations
+**Can't see documents**
+- Make sure you logged in with your company Google account
+- Check if Google Docs API is enabled in the OAuth app
 
-### For Google Workspace Organizations:
+## That's It!
 
-1. **Use Service Accounts**
-   - More secure than individual OAuth
-   - Centralized control
-   - Audit logging
+No service accounts, no complex setup. Just:
+1. IT creates one OAuth app
+2. Shares the configuration
+3. Employees paste it and login once
 
-2. **Restrict Scopes**
-   - Only grant necessary permissions
-   - Use read-only where possible
-
-3. **Monitor Usage**
-   - Track document creation
-   - Set quotas per user
-   - Alert on suspicious activity
-
-### Authentication Flow:
-
-```mermaid
-graph LR
-    A[User] --> B[Claude Desktop]
-    B --> C[DocuGen MCP]
-    C --> D[Company Auth Server]
-    D --> E[Google Workspace]
-    E --> F[Create Document]
-```
-
-## Deployment Checklist
-
-### For IT Administrators:
-
-- [ ] Create Google Cloud Project
-- [ ] Enable Google Docs and Drive APIs
-- [ ] Set up service account or OAuth app
-- [ ] Configure domain-wide delegation (if using service account)
-- [ ] Deploy MCP server or NPM package
-- [ ] Create installer or setup script
-- [ ] Document internal setup process
-- [ ] Test with pilot users
-- [ ] Roll out to organization
-
-### For End Users (After IT Setup):
-
-- [ ] Install Claude Desktop
-- [ ] Run company-provided installer or npm package
-- [ ] Restart Claude Desktop
-- [ ] Start using DocuGen commands
-
-## Support Resources
-
-### Common Issues:
-
-**"Not authorized" errors**
-- Service account needs domain-wide delegation
-- User might not be in allowed group
-
-**Templates not loading**
-- Check network connection to template server
-- Verify user permissions
-
-**Claude not recognizing DocuGen**
-- Restart Claude Desktop completely
-- Check config file syntax
-
-### Monitoring Dashboard:
-
-```javascript
-// Simple usage dashboard
-app.get('/dashboard', (req, res) => {
-  res.json({
-    totalDocuments: 1523,
-    activeUsers: 178,
-    popularTemplates: ['prd', 'tech-spec'],
-    lastWeekUsage: {
-      monday: 45,
-      tuesday: 62,
-      wednesday: 58,
-      thursday: 71,
-      friday: 52
-    }
-  });
-});
-```
-
-## Cost Estimation
-
-For 200 users:
-- Google Workspace API: Included with Workspace license
-- Server hosting: ~$50/month (can use existing infrastructure)
-- Setup time: 2-4 hours for IT
-- User training: 15 minutes per user
-
-## Questions?
-
-Contact your IT administrator or refer to internal documentation.
+For detailed technical explanation, see [How Authentication Works](./HOW_AUTH_WORKS.md)
