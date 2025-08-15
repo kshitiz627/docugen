@@ -1,90 +1,58 @@
-# DocuGen 📄
+# DocuGen MCP Server
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![MCP](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
-[![Google APIs](https://img.shields.io/badge/Google%20APIs-Docs%20%26%20Drive-4285F4)](https://developers.google.com/docs/api)
+Create Google Docs with AI using templates and native formatting.
 
-**Create beautiful Google Docs with AI-powered templates and native formatting through the Model Context Protocol.**
+## What is DocuGen?
 
-DocuGen is an MCP server that empowers AI assistants to create professional Google Docs with rich formatting, templates, and automation. Works with Claude Desktop, Cursor, Windsurf, Cline, VS Code, and other MCP-compatible clients.
+DocuGen is an MCP (Model Context Protocol) server that lets AI assistants like Claude, Cursor, and Windsurf create professional Google Docs. Instead of markdown exports, you get real Google Docs with native formatting, tables, and templates.
 
-## 🎯 Two Ways to Use DocuGen
-
-### Option 1: For Individual Users (Personal Google Account)
-Perfect for developers, writers, and professionals using their personal Google accounts.
-- **Setup time**: 5 minutes
-- **What you need**: Create your own Google OAuth credentials (free, we'll show you how!)
-- **Best for**: Personal projects, individual use
-
-📺 **[Watch 5-Minute Setup Video](https://youtube.com/docugen-setup)** or 📖 **[Follow Step-by-Step Guide](docs/SETUP_OAUTH.md)**
-
-### Option 2: For Organizations (Google Workspace)
-Ideal for companies deploying to teams.
-- **Setup time**: IT creates one OAuth app, users just copy-paste config
-- **What you need**: Google Workspace admin access
-- **Best for**: Teams of 10-1000+ users
-
-📘 **[Enterprise Setup Guide](docs/ENTERPRISE.md)**
-
-## ✨ Features
-
-- 🎨 **Native Google Docs Formatting** - Real Google Docs, not markdown exports
-- 📝 **Professional Templates** - PRDs, tech specs, test plans, release notes
-- 🤖 **Multi-Client Support** - Works with Claude, Cursor, Windsurf, Cline, VS Code
-- 🔧 **Custom Templates** - Create and save your own templates
-- 📊 **Tables & Lists** - Native tables, bullets, numbering with proper formatting
-- 🎯 **Smart Placeholders** - Auto-fill dates, names, and custom variables
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 16+ and npm installed
-- Any MCP-compatible client (Claude Desktop, Cursor, Windsurf, etc.)
-- Google account (personal or workspace)
-
-### Installation with NPX (Recommended)
-
-No installation needed! DocuGen runs directly with `npx`:
+## Installation
 
 ```bash
-# Test if it works
+# No installation needed - runs with npx
 npx docugen-mcp --version
 ```
 
-### Step 1: Set Up Google OAuth (5 minutes, one-time setup)
+## Setup Guide
 
-You need Google OAuth credentials to allow DocuGen to create documents in your account.
+### Step 1: Create Google OAuth Credentials (5 minutes)
 
-**🎥 Video Tutorial**: [Watch on YouTube](https://youtube.com/docugen-oauth) (5 min)
+1. Go to https://console.cloud.google.com
+2. Sign in with your Google account
+3. Click "Select a project" → "NEW PROJECT"
+4. Name it "DocuGen" and click "CREATE"
+5. Wait 10 seconds, then select your new project from the dropdown
 
-**📝 Written Guide**: [Step-by-Step with Screenshots](docs/SETUP_OAUTH.md)
+#### Enable APIs:
+1. Click hamburger menu (☰) → "APIs & Services" → "Library"
+2. Search "Google Docs API" → Click it → Click "ENABLE"
+3. Go back, search "Google Drive API" → Click it → Click "ENABLE"
 
-<details>
-<summary>Quick Steps (Click to expand)</summary>
+#### Configure OAuth:
+1. Go to "APIs & Services" → "OAuth consent screen"
+2. Choose "External" (or "Internal" for Google Workspace)
+3. Fill in:
+   - App name: `DocuGen MCP`
+   - User support email: Your email
+   - Developer contact: Your email
+4. Click "SAVE AND CONTINUE" through all steps
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create new project called "DocuGen"
-3. Enable Google Docs API and Google Drive API
-4. Create OAuth credentials (Desktop app type)
-5. Download as `credentials.json`
-6. Save to your home directory
-
-</details>
+#### Create Credentials:
+1. Go to "APIs & Services" → "Credentials"
+2. Click "+ CREATE CREDENTIALS" → "OAuth client ID"
+3. Choose "Desktop app"
+4. Name it "DocuGen Desktop"
+5. Click "CREATE"
+6. Click "DOWNLOAD JSON"
+7. Save as `credentials.json` in your home directory
 
 ### Step 2: Configure Your AI Client
 
-Choose your client below and add the configuration:
+#### For Claude Desktop
 
-<details>
-<summary>📱 Claude Desktop</summary>
+**Mac:** Edit `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows:** Edit `%APPDATA%\Claude\claude_desktop_config.json`
 
-**Location:**
-- Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-**Configuration:**
 ```json
 {
   "mcpServers": {
@@ -99,17 +67,10 @@ Choose your client below and add the configuration:
 }
 ```
 
-[Full Claude Setup Guide](docs/SETUP_CLAUDE.md)
-</details>
+#### For Cursor
 
-<details>
-<summary>🖱️ Cursor</summary>
+Create `.cursor/mcp.json` in your project or `~/.cursor/mcp.json` globally:
 
-**Location:**
-- Project: `.cursor/mcp.json`
-- Global: `~/.cursor/mcp.json`
-
-**Configuration:**
 ```json
 {
   "mcpServers": {
@@ -124,15 +85,10 @@ Choose your client below and add the configuration:
 }
 ```
 
-[Full Cursor Setup Guide](docs/SETUP_CURSOR.md)
-</details>
+#### For Windsurf
 
-<details>
-<summary>🌊 Windsurf</summary>
+Edit `~/.codeium/windsurf/mcp_config.json`:
 
-**Location:** `~/.codeium/windsurf/mcp_config.json`
-
-**Configuration:**
 ```json
 {
   "mcpServers": {
@@ -147,105 +103,54 @@ Choose your client below and add the configuration:
 }
 ```
 
-[Full Windsurf Setup Guide](docs/SETUP_WINDSURF.md)
-</details>
+#### For Cline
 
-<details>
-<summary>🤖 Cline</summary>
+**Mac:** Edit `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`  
+**Windows:** Edit `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
 
-**Location:**
-- Windows: `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
-- Mac: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+Use the same JSON configuration as above.
 
-**Configuration:**
-```json
-{
-  "mcpServers": {
-    "docugen": {
-      "command": "npx",
-      "args": ["docugen-mcp"],
-      "env": {
-        "GOOGLE_OAUTH_PATH": "/path/to/credentials.json"
-      }
-    }
-  }
-}
-```
+### Step 3: Start Using DocuGen
 
-[Full Cline Setup Guide](docs/SETUP_CLINE.md)
-</details>
-
-<details>
-<summary>View More Clients...</summary>
-
-- [VS Code Setup](docs/SETUP_VSCODE.md)
-- [Roo Code Setup](docs/SETUP_ROO.md)
-- [JetBrains IDEs Setup](docs/SETUP_JETBRAINS.md)
-
-</details>
-
-### Step 3: Restart Your Client & Authenticate
-
-1. Completely quit and restart your AI client
-2. When you first use DocuGen, it will open a browser
-3. Sign in with Google and authorize DocuGen
+1. Restart your AI client completely
+2. Ask your AI: "Create a new Google Doc called Test"
+3. On first use, a browser will open - sign in with Google
 4. That's it! You're ready to create documents
 
-## 💬 How to Use
+## Usage Examples
 
-Once configured, just ask your AI assistant:
-
-### Basic Commands
 ```
-"Create a new Google Doc called 'Meeting Notes'"
-"Make a product requirements document for our new feature"
-"Generate a test plan for the checkout flow"
-```
-
-### Using Templates
-```
-"Create a PRD using the template"
-"Make a technical spec for the API redesign"
-"Generate release notes for version 2.0"
-```
-
-### Document Management
-```
+"Create a new Google Doc called Meeting Notes"
+"Make a product requirements document for our search feature"
+"Generate a technical specification with sections for API design"
+"Create a test plan document"
 "List my recent Google Docs"
-"Search for documents about 'roadmap'"
-"Update the status in doc_id_xyz"
+"Search for documents about roadmap"
 ```
 
-## 📚 Documentation
+## Available Templates
 
-- 📖 [Step-by-Step OAuth Setup](docs/SETUP_OAUTH.md) - Detailed guide with screenshots
-- 🏢 [Enterprise Deployment](docs/ENTERPRISE.md) - For IT administrators
-- ❓ [Troubleshooting Guide](docs/TROUBLESHOOTING.md) - Common issues and solutions
-- 🎥 [Video Tutorials](docs/videos/README.md) - Visual guides for setup
-- 📝 [Template Creation](docs/TEMPLATES.md) - Create custom templates
+DocuGen includes professional templates:
+- Product Requirements Document (PRD)
+- Technical Specification
+- Test Plan
+- Release Notes
+- Business Case
 
-## 🎯 Built-in Templates
+Use them like: "Create a PRD for our new feature"
 
-DocuGen includes professional templates for:
+## For Organizations
 
-- **Product Requirements Document (PRD)** - Complete with user stories, success metrics
-- **Technical Specification** - Architecture, API design, data models
-- **Test Plan** - Test cases, coverage, entry/exit criteria
-- **Release Notes** - Features, improvements, known issues
-- **Business Case** - ROI analysis, risk assessment
-- More templates in `templates/` directory
+If your IT team wants to deploy DocuGen for many users:
 
-## 🔧 For Organizations
+### IT Setup (10 minutes):
+1. Create ONE OAuth app following Step 1 above
+2. Share these with employees:
+   - CLIENT_ID from the OAuth app
+   - CLIENT_SECRET from the OAuth app
 
-### NPX with Shared Credentials
-
-Organizations can distribute OAuth credentials internally:
-
-1. **IT Setup:**
-   - Create one Google OAuth app in Google Cloud Console
-   - Share CLIENT_ID and CLIENT_SECRET via internal docs
-
-2. **Employee Configuration:**
+### Employee Setup (2 minutes):
+Instead of `GOOGLE_OAUTH_PATH`, use:
 ```json
 {
   "mcpServers": {
@@ -254,81 +159,72 @@ Organizations can distribute OAuth credentials internally:
       "args": ["docugen-mcp"],
       "env": {
         "GOOGLE_CLIENT_ID": "company-app.apps.googleusercontent.com",
-        "GOOGLE_CLIENT_SECRET": "company-oauth-secret"
+        "GOOGLE_CLIENT_SECRET": "company-secret"
       }
     }
   }
 }
 ```
 
-3. **Result:**
-   - Each employee authenticates once with their Google account
-   - Access only their own documents
-   - No individual OAuth app creation needed
+Each employee still logs in with their own Google account and sees only their documents.
 
-See [Enterprise Guide](docs/ENTERPRISE.md) for detailed instructions.
+## How Authentication Works
 
-## ❓ Troubleshooting
+**Question:** If everyone uses the same OAuth app, how does each person only see their own docs?
 
-### Common Issues
+**Answer:** The OAuth app is just the "identity" of DocuGen. When each person logs in through their browser, they get their own personal access token that's stored on their computer. This token determines which documents they can access.
 
-<details>
-<summary>"No credentials found" error</summary>
+Think of it like a building keycard system:
+- OAuth app = The keycard printer (same for everyone)
+- Your login = Getting your personal keycard with your photo
+- Result = Same printer, but each card only opens your office
 
-- Make sure `credentials.json` exists in the specified path
-- Check the path in your configuration is correct
-- Follow the [OAuth Setup Guide](docs/SETUP_OAUTH.md) to create credentials
+## Troubleshooting
 
-</details>
+### "No credentials found"
+- Make sure credentials.json exists at the path you specified
+- Check for typos in the path
 
-<details>
-<summary>"APIs not enabled" error</summary>
+### "APIs not enabled"
+- Go back to Google Cloud Console
+- Make sure both Google Docs API and Drive API show "Enabled"
 
-- Go to Google Cloud Console
-- Select your project
-- Enable both Google Docs API and Google Drive API
-- [Direct link to API Library](https://console.cloud.google.com/apis/library)
+### MCP server not showing in AI client
+- Completely quit and restart your AI client
+- Check your JSON configuration for syntax errors
+- Make sure you're using forward slashes (/) in paths, even on Windows
 
-</details>
+### Browser doesn't open for authentication
+- Try running `npx docugen-mcp` directly in terminal
+- Make sure you have a default browser set
 
-<details>
-<summary>MCP server not showing in client</summary>
+### "Token has been expired or revoked"
+- Delete `~/.docugen/token.json`
+- Restart your AI client to re-authenticate
 
-- Completely quit your AI client (not just close window)
-- Check your configuration file for syntax errors (valid JSON)
-- Ensure the path to credentials.json is absolute, not relative
-- Restart your AI client
+## Features
 
-</details>
+- ✅ Native Google Docs formatting (not markdown)
+- ✅ Professional templates built-in
+- ✅ Works with all major AI coding assistants
+- ✅ Create, update, list, and search documents
+- ✅ Tables, lists, headings with proper formatting
+- ✅ Each user only accesses their own documents
 
-<details>
-<summary>Browser doesn't open for authentication</summary>
+## Requirements
 
-- Check if your default browser is set
-- Try running `npx docugen-mcp auth` directly in terminal
-- Make sure you're not in a headless environment
+- Node.js 16+ installed
+- Google account
+- Any MCP-compatible AI client (Claude, Cursor, Windsurf, Cline, etc.)
 
-</details>
+## License
 
-More solutions in our [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+Apache 2.0 - Free for personal and commercial use
 
-## 🤝 Support
+## Author
 
-- 📺 [Video Tutorials](https://youtube.com/@docugen)
-- 💬 [GitHub Discussions](https://github.com/eagleisbatman/docugen/discussions) - Ask questions
-- 🐛 [Report Issues](https://github.com/eagleisbatman/docugen/issues)
-- 📧 Email: support@docugen.dev
-
-## 📄 License
-
-Apache License 2.0 - Free for personal and commercial use.
-
-## 🙏 Acknowledgments
-
-Built with [Model Context Protocol](https://modelcontextprotocol.io) by Anthropic.
+Created by Gautam Mandewalker
 
 ---
 
-**Made with ❤️ by Gautam Mandewalker**
-
-*Transform your document workflow with AI-powered Google Docs automation.*
+**Need help?** Open an issue at https://github.com/eagleisbatman/docugen/issues
