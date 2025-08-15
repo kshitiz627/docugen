@@ -1,6 +1,6 @@
 {
     "name": "docugen-mcp",
-    "version": "1.0.0",
+    "version": "5.0.0",
     "description": "MCP server that enables AI assistants to create, edit, and manage Google Docs with advanced formatting, tables, and collaboration features",
     "main": "build/server.js",
     "type": "module",
