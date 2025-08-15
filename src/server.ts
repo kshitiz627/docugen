@@ -11,6 +11,29 @@ import * as process from "process";
 import { z } from "zod";
 import { docs_v1, drive_v3 } from "googleapis";
 
+// Handle command line arguments
+if (process.argv.includes('--version') || process.argv.includes('-v')) {
+  const packageJson = JSON.parse(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'package.json'), 'utf-8'));
+  console.log(`docugen-mcp v${packageJson.version}`);
+  process.exit(0);
+}
+
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+DocuGen MCP Server - Google Docs automation with templates
+
+Usage:
+  npx docugen-mcp              Start the MCP server
+  npx docugen-mcp --version    Show version
+  npx docugen-mcp --help       Show this help
+
+Configuration:
+  Set GOOGLE_OAUTH_PATH or GOOGLE_CLIENT_ID/SECRET environment variables
+  See https://github.com/eagleisbatman/docugen for setup instructions
+`);
+  process.exit(0);
+}
+
 // ============================================================================
 // DOCGEN MCP SERVER - GOOGLE DOCS AUTOMATION WITH TEMPLATES
 // ============================================================================
