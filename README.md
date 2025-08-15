@@ -9,9 +9,9 @@
 
 **Complete Google Docs automation for AI assistants. All 33 batch operations + tabs, suggestions, and analysis tools. 43+ operations total.**
 
-## What's New in v4.3
+## Features
 
-v4.3 is the complete implementation with clean architecture:
+Complete implementation with clean architecture:
 
 - ✅ **All 33 Batch Operations** - Every single Google Docs API batch operation
 - ✅ **Tab Management** - Full support for document tabs and nested tabs  
@@ -313,14 +313,7 @@ DocuGen MCP Server v4.0
     └── High-Level Workflows (5+)
 ```
 
-## Version History
-
-- **v1.x** - Initial attempts, overcomplicated
-- **v2.x** - Oversimplified to 4-5 tools
-- **v3.0** - Proper implementation with 20+ tools
-- **v4.0+** - Complete with all 33 operations + advanced features
-
-## Why v4.3 is Production Ready
+## Why DocuGen is Production Ready
 
 1. **Complete API Coverage** - Every Google Docs API endpoint
 2. **Clean Architecture** - Single implementation, modular utilities
@@ -361,6 +354,3 @@ Deploy for your entire team with one setup. Each employee maintains private acce
 
 Apache-2.0
 
----
-
-**v4.3.0** - Complete implementation with all 33 batch operations and beyond.

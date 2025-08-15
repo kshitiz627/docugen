@@ -1,6 +1,6 @@
 {
     "name": "docugen-mcp",
-    "version": "4.3.0",
+    "version": "5.0.0",
     "description": "DocGen - 100% COMPLETE Google Docs API - All 3 primary methods + 33 batch operations + helpers",
     "main": "build/server.js",
     "type": "module",
