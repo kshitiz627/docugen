@@ -1463,6 +1463,47 @@ server.tool(
   }
 );
 
+// Update document with markdown
+server.tool(
+  "update-doc-markdown",
+  {
+    documentId: z.string().describe("Document ID to update"),
+    markdown: z.string().describe("New content in GitHub-flavored markdown format"),
+    mode: z.enum(["replace", "append"]).optional().describe("Update mode: replace all content or append to existing (default: replace)")
+  },
+  async ({ documentId, markdown, mode = "replace" }) => {
+    try {
+      if (!markdownConverter && !initMarkdownConverter()) {
+        return {
+          content: [{
+            type: "text",
+            text: "❌ Google API not initialized. Please check credentials."
+          }],
+          isError: true
+        };
+      }
+      
+      await markdownConverter!.updateWithMarkdown(documentId, markdown, mode);
+      
+      return {
+        content: [{
+          type: "text",
+          text: `✅ Updated document ${documentId}\nMode: ${mode}\n\nThe document has been ${mode === 'replace' ? 'replaced with' : 'appended with'} new markdown content.`
+        }]
+      };
+    } catch (error) {
+      console.error("Error updating markdown document:", error);
+      return {
+        content: [{
+          type: "text",
+          text: `Error: ${error}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
+
 // ============================================================================
 // INCREMENTAL DOCUMENT BUILDING
 // ============================================================================

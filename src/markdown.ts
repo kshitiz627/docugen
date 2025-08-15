@@ -168,19 +168,49 @@ export class MarkdownToDocsConverter {
     return rows;
   }
   
-  // Convert markdown to Google Docs
-  async createFromMarkdown(title: string, markdown: string): Promise<string> {
-    // Create document
-    const createResponse = await this.docsClient.documents.create({
-      requestBody: { title }
-    });
-    
-    const documentId = createResponse.data.documentId!;
+  // Update existing document with markdown
+  async updateWithMarkdown(documentId: string, markdown: string, mode: 'replace' | 'append' = 'replace'): Promise<void> {
     const sections = this.parseMarkdown(markdown);
     
-    // Build requests
+    if (mode === 'replace') {
+      // Get current document to find content length
+      const doc = await this.docsClient.documents.get({ documentId });
+      const endIndex = doc.data.body?.content?.slice(-1)[0]?.endIndex || 1;
+      
+      // Clear existing content (except the last newline)
+      const clearRequests: any[] = [];
+      if (endIndex > 1) {
+        clearRequests.push({
+          deleteContentRange: {
+            range: {
+              startIndex: 1,
+              endIndex: endIndex - 1
+            }
+          }
+        });
+      }
+      
+      if (clearRequests.length > 0) {
+        await this.docsClient.documents.batchUpdate({
+          documentId,
+          requestBody: { requests: clearRequests }
+        });
+      }
+      
+      // Now add new content
+      await this.appendSectionsToDocument(documentId, sections, 1);
+    } else {
+      // Append mode - add to the end
+      const doc = await this.docsClient.documents.get({ documentId });
+      const endIndex = doc.data.body?.content?.slice(-1)[0]?.endIndex || 1;
+      await this.appendSectionsToDocument(documentId, sections, endIndex - 1);
+    }
+  }
+  
+  // Helper method to append sections to document
+  private async appendSectionsToDocument(documentId: string, sections: MarkdownSection[], startIndex: number): Promise<void> {
     const requests: any[] = [];
-    let currentIndex = 1;
+    let currentIndex = startIndex;
     
     for (const section of sections) {
       switch (section.type) {
@@ -376,6 +406,20 @@ export class MarkdownToDocsConverter {
         requestBody: { requests }
       });
     }
+  }
+  
+  // Create new document from markdown
+  async createFromMarkdown(title: string, markdown: string): Promise<string> {
+    // Create document
+    const createResponse = await this.docsClient.documents.create({
+      requestBody: { title }
+    });
+    
+    const documentId = createResponse.data.documentId!;
+    const sections = this.parseMarkdown(markdown);
+    
+    // Add content to document
+    await this.appendSectionsToDocument(documentId, sections, 1);
     
     return documentId;
   }

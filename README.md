@@ -337,8 +337,9 @@ Kilo Code features an MCP Server Marketplace for easy installation and managemen
 ```
 
 ### 🎯 NEW: Simplified Markdown Approach
-DocuGen now supports creating documents from GitHub-flavored markdown - the format AI assistants naturally generate:
+DocuGen now supports creating AND updating documents from GitHub-flavored markdown - the format AI assistants naturally generate:
 
+**Creating a new document:**
 ```
 "Create a document with this markdown content:
 # Project Proposal
@@ -359,12 +360,30 @@ This project aims to improve our search functionality.
 "
 ```
 
+**Updating an existing document:**
+```
+"Update document [document_id] with this new content:
+# Project Proposal (Updated)
+## Executive Summary
+Updated content here...
+"
+```
+
+**Appending to a document:**
+```
+"Append to document [document_id] this additional content:
+## New Section
+Additional content to add at the end...
+"
+```
+
 **Why Markdown?**
 - **Natural for AI:** AI assistants already generate markdown naturally
 - **Reliable:** Simple text format that always works
 - **Full Formatting:** Supports headings, lists, tables, code blocks, quotes
 - **GitHub Compatible:** Same markdown you use in README files
 - **One-shot Creation:** Send entire document at once, no complex operations
+- **Update Support:** Update existing documents instead of creating new ones each time
 
 **Supported Markdown Features:**
 - Headings (# ## ### etc.)
@@ -375,7 +394,11 @@ This project aims to improve our search functionality.
 - Blockquotes with >
 - Horizontal rules with ---
 
-The AI can simply generate the document content in markdown format and DocuGen will create a properly formatted Google Doc with native formatting.
+The AI can simply generate the document content in markdown format and DocuGen will create or update a properly formatted Google Doc with native formatting.
+
+**Available Markdown Tools:**
+- `create-doc-markdown` - Create a new document from markdown
+- `update-doc-markdown` - Update existing document (replace or append mode)
 
 ## 📑 Available Templates
 
