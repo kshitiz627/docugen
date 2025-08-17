@@ -1,227 +1,247 @@
 # DocuGen - Google Sheets MCP Server
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python Version](https://img.shields.io/badge/python-%3E%3D3.10-blue)](https://python.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-%3E%3D3.12-blue)](https://python.org)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
 
-A comprehensive Model Context Protocol (MCP) server for Google Sheets automation, providing 60+ operations for complete spreadsheet control.
+A powerful Google Sheets automation server for Claude Desktop using the Model Context Protocol (MCP). Create spreadsheets, analyze data, build dashboards, and automate workflows with 60+ operations.
 
-## Overview
+## 🚀 What is DocuGen?
 
-DocuGen is a Python-based MCP server that enables AI assistants like Claude to interact with Google Sheets through a standardized protocol. It implements the full Google Sheets API v4 functionality as MCP tools, allowing for complex spreadsheet automation, data manipulation, and report generation.
+DocuGen enables Claude to create and manipulate Google Sheets programmatically. Instead of manually clicking through spreadsheets, just tell Claude what you need in plain English:
 
-## Features
+- "Create a budget tracker for my personal finances"
+- "Import this CSV data and create a sales dashboard"
+- "Build an inventory management system with reorder alerts"
 
-### 60+ Implemented Operations
+## ✨ Features
 
-- **Spreadsheet Management**: Create, read metadata, update properties, duplicate
-- **Data Operations**: Read, write, append, clear, batch operations
-- **Sheet Management**: Add, delete, duplicate, rename, move, hide/unhide sheets
-- **Formatting**: Cell formatting, borders, text rotation, merging, text wrapping
-- **Data Processing**: Filters, sorting, filter views, range operations
-- **Advanced Features**: Charts, pivot tables, sparklines
-- **Validation & Protection**: Data validation, dropdowns, conditional formatting, range protection
-- **Import/Export**: CSV, JSON, HTML import/export capabilities
-- **Dimension Operations**: Insert/delete rows/columns, resize, auto-resize, freeze panes
-- **Batch Operations**: Batch updates, batch metadata, transaction updates
+### 60+ Google Sheets Operations
+- **Spreadsheet Management**: Create, batch update, get metadata
+- **Data Operations**: Read, write, append, clear, import CSV/JSON
+- **Formatting**: Cell styles, borders, merging, conditional formatting
+- **Advanced Features**: Pivot tables, charts, data validation, filters
+- **Sheet Management**: Add, delete, duplicate, rename, hide/show sheets
+- **Protection**: Lock ranges, protect sheets, manage permissions
+- **Formulas**: Add complex formulas, named ranges, calculations
 
-### Security Features
+### Smart Templates
+- Budget trackers with income/expense categories
+- Financial dashboards with KPIs and charts
+- Project management with Gantt charts
+- Inventory systems with automatic reorder alerts
+- CRM systems with contact and deal tracking
+- Event planning templates
+- Loan calculators with amortization schedules
 
-- **Input Validation**: Comprehensive validation for all operations
-- **Rate Limiting**: Prevents API abuse with configurable limits
-- **Data Sanitization**: Protection against injection attacks
-- **Error Handling**: Secure error messages without sensitive data exposure
-- **OAuth 2.0**: Secure authentication with Google APIs
+## 📋 Prerequisites
 
-## Installation
+- Python 3.12 or higher
+- Google Cloud account (free tier works)
+- Claude Desktop app
+- 5 minutes for setup
 
-### Prerequisites
+## 🛠️ Installation
 
-- Python 3.10 or higher
-- Google Cloud Project with Sheets API enabled
-- OAuth 2.0 credentials (Desktop application type)
+### Step 1: Clone and Install
 
-### Quick Setup
-
-1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/docugen.git
+# Clone the repository
+git clone https://github.com/eagleisbatman/docugen.git
 cd docugen
-```
 
-2. **Install dependencies**
-```bash
-# Install Google API dependencies
+# Create virtual environment (recommended)
+python3.12 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-
-# Install MCP SDK from GitHub
 pip install git+https://github.com/modelcontextprotocol/python-sdk.git
 ```
 
-3. **Set up Google OAuth**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Enable Google Sheets API and Google Drive API
-   - Create OAuth 2.0 credentials (Desktop type)
-   - Download credentials JSON file
+### Step 2: Set Up Google OAuth
 
-4. **Configure environment**
-```bash
-export GOOGLE_OAUTH_PATH="/path/to/credentials.json"
-```
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or use existing)
+3. Enable **Google Sheets API**:
+   - Navigate to "APIs & Services" > "Library"
+   - Search for "Google Sheets API"
+   - Click and enable it
 
-## Usage
+4. Create OAuth 2.0 credentials:
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth client ID"
+   - Choose "Desktop app" as application type
+   - Download the JSON file
+   - Save it somewhere secure (e.g., `~/Desktop/credentials.json`)
 
-### With Claude Desktop
+### Step 3: Configure Claude Desktop
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "docugen": {
-      "command": "python3",
-      "args": ["/absolute/path/to/docugen/src/docugen/main.py"],
+      "command": "python3.12",
+      "args": [
+        "/absolute/path/to/docugen/docugen_mcp_server.py"
+      ],
       "env": {
-        "GOOGLE_OAUTH_PATH": "/path/to/credentials.json",
-        "PYTHONPATH": "/absolute/path/to/docugen/src"
+        "GOOGLE_OAUTH_PATH": "/path/to/your/credentials.json"
       }
     }
   }
 }
 ```
 
-### Testing
+Replace paths with your actual paths!
+
+### Step 4: Restart Claude Desktop
+
+Completely quit and restart Claude Desktop. You should see the MCP icon (🔌) in the chat interface.
+
+## 💬 Usage Examples
+
+### Creating a Budget Tracker
+```
+"Create a personal budget tracker with income, expenses, and monthly summary"
+```
+
+### Importing CSV Data
+```
+"Import this CSV data and analyze it:
+Date,Product,Sales,Quantity
+2024-01-15,Widget A,1500,50
+2024-01-16,Widget B,2300,75
+Create a pivot table and sales chart"
+```
+
+### Building a Dashboard
+```
+"Create a financial dashboard for Q4 2024 with revenue tracking, expense categories, and KPI metrics"
+```
+
+### Project Management
+```
+"Build a project tracker with task list, timeline, status tracking, and Gantt chart visualization"
+```
+
+## 🧪 Testing
+
+Test the server installation:
 
 ```bash
-# Test server structure (with dummy credentials)
-GOOGLE_OAUTH_PATH="/tmp/dummy_credentials.json" python3 test_server.py
+# Test with example script
+cd docugen
+python3.12 examples/test_server.py
 
-# Run with real credentials
-GOOGLE_OAUTH_PATH="/path/to/credentials.json" python3 src/docugen/main.py
+# You should see:
+# ✓ Server module imported successfully
+# ✓ FastMCP server instance found
+# ✓ Found 91 callable functions in module
+# ✓ Found 6/6 key operations as functions
 ```
 
-## Architecture
-
-DocuGen features a modular architecture with clear separation of concerns:
+## 📁 Project Structure
 
 ```
-src/docugen/
-├── server.py               # MCP server implementation
-├── main.py                 # Entry point
-├── config.py               # Configuration management
-├── core/                   # Core functionality (auth, client)
-├── operations/             # 60+ Google Sheets operations
-├── models/                 # Data models
-├── security/               # Security features
-└── utils/                  # Utilities (cache, metrics, logging)
+docugen/
+├── docugen_mcp_server.py    # Main server (3700+ lines, 60+ operations)
+├── requirements.txt         # Python dependencies
+├── docs/
+│   ├── CLAUDE.md           # Development guide
+│   ├── SETUP_GUIDE.md      # Detailed setup instructions
+│   ├── DOCUGEN_SYSTEM_PROMPT.md  # Claude's instructions
+│   └── DOCUGEN_USER_PROMPTS.md   # Example prompts
+└── examples/
+    ├── claude_desktop_config.json  # Example configuration
+    ├── test_server.py              # Test script
+    └── usage_example.py            # Usage examples
 ```
 
-### Technology Stack
+## 🔧 How It Works
 
-- **MCP SDK**: Official Python SDK from Anthropic
-- **Google APIs**: Official Python client for Sheets/Drive
-- **Pydantic**: Data validation and models
-- **Async/Await**: Modern asynchronous Python
-- **OAuth 2.0**: Secure Google authentication
+1. **You tell Claude** what you want in natural language
+2. **Claude understands** your business need
+3. **DocuGen executes** the appropriate Google Sheets operations
+4. **You get** a professional spreadsheet without writing code
 
-## Example Usage in Claude
+### Technical Details
 
-Once configured, you can ask Claude to:
+- Uses **FastMCP** framework for efficient MCP implementation
+- **OAuth 2.0** authentication with Google
+- Token stored securely in `~/.docugen/sheets_token.json`
+- All operations in a single, well-organized file
+- Comprehensive error handling and validation
 
-```
-"Create a new spreadsheet called 'Q4 Budget' with sheets for Revenue, Expenses, and Summary"
+## 🚨 Important Notes
 
-"Read data from Sheet1 A1:D100 and create a chart showing the trends"
+- **CSV Import**: Users must paste data as text (Claude can't access local files)
+- **Permissions**: First run opens browser for Google authorization
+- **Spreadsheet IDs**: Claude provides the ID after creating spreadsheets
+- **Operations**: Claude can create, read, update, format - but not delete entire spreadsheets
 
-"Apply formatting to make the header row bold with a blue background"
+## 🐛 Troubleshooting
 
-"Set up data validation to create a dropdown list in column B"
+### Server doesn't appear in Claude Desktop
+- Ensure paths in config are absolute, not relative
+- Check Python version: `python3.12 --version`
+- Restart Claude Desktop completely
+- Verify credentials file exists
 
-"Export the current sheet as CSV"
+### Authentication issues
+- Ensure Google Sheets API is enabled
+- Check OAuth consent screen is configured
+- Verify you're using Desktop app credentials
 
-"Create a pivot table from the sales data"
-```
-
-## Development
-
-### Project Structure
-
-- **Modular Design**: Operations are organized into logical modules
-- **Base Classes**: All operations inherit from `BaseOperation`
-- **Dependency Injection**: Services are injected via context
-- **Security First**: Validation and sanitization at boundaries
-- **Comprehensive Testing**: Structure tests with dummy credentials
-
-### Adding New Operations
-
-1. Add operation to appropriate module in `src/docugen/operations/`
-2. Inherit from `BaseOperation` or appropriate base class
-3. Implement `validate_inputs()` and `execute()` methods
-4. Add to operation imports in `server.py`
-5. Test with dummy credentials first
-
-## Authentication
-
-- First run prompts for Google authorization in browser
-- Token saved to `~/.docugen/token.json`
-- Automatic token refresh on subsequent runs
-- Secure credential storage
-
-## Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new operations
-4. Ensure structure tests pass
-5. Submit a pull request
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Import Errors**: Ensure MCP SDK is installed from GitHub
-2. **Authentication Failed**: Check OAuth credentials and scopes
-3. **Rate Limiting**: Adjust rate limits in configuration
-4. **Python Version**: Requires Python 3.10+
-
-### Debug Mode
-
-Enable debug logging:
+### Import errors
 ```bash
-export DOCUGEN_LOG_LEVEL=DEBUG
+# Reinstall MCP SDK
+pip uninstall mcp
+pip install git+https://github.com/modelcontextprotocol/python-sdk.git
 ```
 
-## License
+## 📚 Documentation
 
-MIT License - see [LICENSE](LICENSE) file for details
+- [SETUP_GUIDE.md](docs/SETUP_GUIDE.md) - Detailed setup walkthrough
+- [DOCUGEN_USER_PROMPTS.md](docs/DOCUGEN_USER_PROMPTS.md) - Example prompts
+- [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md) - How Claude uses DocuGen
+- [CLAUDE.md](docs/CLAUDE.md) - Development notes
 
-## Support
+## 🤝 Contributing
 
-For issues or questions:
-- Check [CLAUDE.md](CLAUDE.md) for development guide
-- Review [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for architecture details
-- Ensure Google APIs are enabled in Cloud Console
-- Verify OAuth credentials have correct scopes
+Contributions welcome! The codebase is a single file (`docugen_mcp_server.py`) with 60+ well-organized operations.
 
-## Acknowledgments
+To add new operations:
+1. Add your function to `docugen_mcp_server.py`
+2. Decorate with `@mcp.tool()`
+3. Follow the existing pattern for parameters and returns
+4. Test with `examples/test_server.py`
 
-- Built with [Model Context Protocol](https://modelcontextprotocol.io/) by Anthropic
-- Uses Google Sheets API v4
-- Powered by the official MCP Python SDK
+## 📄 License
 
-## Status
+Apache-2.0 License - see [LICENSE](LICENSE) file
 
-✅ **Production Ready** - All 60+ operations implemented and tested
-- Structure tests passing
-- Modular architecture complete
-- Security features implemented
-- Ready for authentication testing with real credentials
-
-## Author
+## 👨‍💻 Author
 
 **Created by Gautam Mandewalker**
 
 📍 Cumming, Forsyth County, Georgia, USA
 
 🔗 [GitHub](https://github.com/eagleisbatman) | [LinkedIn](https://www.linkedin.com/in/gautammandewalker/)
+
+## 🙏 Acknowledgments
+
+- Built with [Model Context Protocol](https://modelcontextprotocol.io/) by Anthropic
+- Uses [FastMCP](https://github.com/modelcontextprotocol/python-sdk) framework
+- Powered by Google Sheets API v4
+
+## 📊 Status
+
+✅ **Production Ready**
+- 91 tools available (60+ unique operations)
+- Single-file architecture for simplicity
+- FastMCP framework for performance
+- Comprehensive error handling
+- Ready for immediate use with Claude Desktop
