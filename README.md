@@ -217,3 +217,11 @@ For issues or questions:
 - Modular architecture complete
 - Security features implemented
 - Ready for authentication testing with real credentials
+
+## Author
+
+**Created by Gautam Mandewalker**
+
+📍 Cumming, Forsyth County, Georgia, USA
+
+🔗 [GitHub](https://github.com/eagleisbatman) | [LinkedIn](https://www.linkedin.com/in/gautammandewalker/)
