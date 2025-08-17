@@ -101,16 +101,17 @@ Replace paths with your actual paths!
 
 Completely quit and restart Claude Desktop. You should see the MCP icon (🔌) in the chat interface.
 
-### Step 5: (Optional) Optimize Claude's Understanding
+### Step 5: (Recommended) Set Up a DocuGen Project
 
-For best results, you can add the system prompt to help Claude understand DocuGen better:
+For best results, create a dedicated project in Claude Desktop:
 
-1. Start a new conversation in Claude Desktop
-2. Copy the content from [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md)
-3. Paste it at the beginning of your conversation
-4. Claude will now have detailed knowledge of all DocuGen operations
+1. In Claude Desktop, create a new Project
+2. Go to Project Settings → Custom Instructions
+3. Copy the content from [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md)
+4. Paste it into the project instructions
+5. Save the project as "DocuGen" or "Spreadsheets"
 
-Note: This step is optional but recommended for complex spreadsheet tasks.
+Now every conversation in this project will have full knowledge of DocuGen's capabilities!
 
 ## 💬 Usage Examples
 
@@ -219,8 +220,8 @@ pip install git+https://github.com/modelcontextprotocol/python-sdk.git
 - [SETUP_GUIDE.md](docs/SETUP_GUIDE.md) - Detailed setup walkthrough with screenshots
 - [DOCUGEN_USER_PROMPTS.md](docs/DOCUGEN_USER_PROMPTS.md) - 50+ example prompts to try
 
-### Enhancing Claude's Performance
-- [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md) - Paste this in your conversation for better results (includes 12 detailed workflow examples)
+### Optimizing Claude's Performance
+- [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md) - Add to Claude Desktop project instructions for best results (includes 12 detailed workflow examples)
 
 ## 🤝 Contributing
 
