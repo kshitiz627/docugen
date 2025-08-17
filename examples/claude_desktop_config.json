@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "docugen": {
+      "command": "python3",
+      "args": [
+        "/Users/eagleisbatman/digitalgreen_projects/docugen/docugen_mcp_server.py"
+      ],
+      "env": {
+        "GOOGLE_OAUTH_PATH": "/Users/eagleisbatman/Desktop/credentials.json"
+      }
+    }
+  }
+}

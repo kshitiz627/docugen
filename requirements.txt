@@ -1,4 +1,19 @@
-google-auth==2.23.4
-google-auth-oauthlib==1.1.0
-google-auth-httplib2==0.1.1
-google-api-python-client==2.108.0
+# DocuGen MCP Server - Python Dependencies
+
+# MCP SDK (install from GitHub)
+# pip install git+https://github.com/modelcontextprotocol/python-sdk.git
+
+# Google APIs
+google-api-python-client==2.149.0
+google-auth==2.35.0
+google-auth-oauthlib==1.2.1
+google-auth-httplib2==0.2.0
+
+# Core dependencies
+python-dotenv==1.0.1
+pydantic==2.9.2
+aiofiles==24.1.0
+
+# Optional - for enhanced features
+pandas==2.2.3  # For data manipulation
+openpyxl==3.1.5  # For Excel export/import
