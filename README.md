@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/badge/python-%3E%3D3.12-blue)](https://python.org)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io)
 
-A powerful Google Sheets automation server for Claude Desktop using the Model Context Protocol (MCP). Create spreadsheets, analyze data, build dashboards, and automate workflows with 60+ operations.
+A powerful Google Sheets automation server for Claude Desktop using the Model Context Protocol (MCP). Create spreadsheets, analyze data, build dashboards, and automate workflows with 62 operations.
 
 ## 🚀 What is DocuGen?
 
@@ -16,7 +16,7 @@ DocuGen enables Claude to create and manipulate Google Sheets programmatically. 
 
 ## ✨ Features
 
-### 60+ Google Sheets Operations
+### 62 Google Sheets Operations
 - **Spreadsheet Management**: Create, batch update, get metadata
 - **Data Operations**: Read, write, append, clear, import CSV/JSON
 - **Formatting**: Cell styles, borders, merging, conditional formatting
@@ -151,7 +151,7 @@ python3.12 examples/test_server.py
 # You should see:
 # ✓ Server module imported successfully
 # ✓ FastMCP server instance found
-# ✓ Found 91 callable functions in module
+# ✓ Found 62 tools registered
 # ✓ Found 6/6 key operations as functions
 ```
 
@@ -159,7 +159,7 @@ python3.12 examples/test_server.py
 
 ```
 docugen/
-├── docugen_mcp_server.py    # Main server (3700+ lines, 60+ operations)
+├── docugen_mcp_server.py    # Main server (3700+ lines, 62 operations)
 ├── requirements.txt         # Python dependencies
 ├── docs/
 │   ├── CLAUDE.md           # Development guide
@@ -225,7 +225,7 @@ pip install git+https://github.com/modelcontextprotocol/python-sdk.git
 
 ## 🤝 Contributing
 
-Contributions welcome! The codebase is a single file (`docugen_mcp_server.py`) with 60+ well-organized operations.
+Contributions welcome! The codebase is a single file (`docugen_mcp_server.py`) with 62 well-organized operations.
 
 To add new operations:
 1. Add your function to `docugen_mcp_server.py`
@@ -254,7 +254,7 @@ Apache-2.0 License - see [LICENSE](LICENSE) file
 ## 📊 Status
 
 ✅ **Production Ready**
-- 91 tools available (60+ unique operations)
+- 62 tools available (exactly as shown in Claude Desktop)
 - Single-file architecture for simplicity
 - FastMCP framework for performance
 - Comprehensive error handling
