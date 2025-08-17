@@ -101,6 +101,17 @@ Replace paths with your actual paths!
 
 Completely quit and restart Claude Desktop. You should see the MCP icon (🔌) in the chat interface.
 
+### Step 5: (Optional) Optimize Claude's Understanding
+
+For best results, you can add the system prompt to help Claude understand DocuGen better:
+
+1. Start a new conversation in Claude Desktop
+2. Copy the content from [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md)
+3. Paste it at the beginning of your conversation
+4. Claude will now have detailed knowledge of all DocuGen operations
+
+Note: This step is optional but recommended for complex spreadsheet tasks.
+
 ## 💬 Usage Examples
 
 ### Creating a Budget Tracker
@@ -202,12 +213,14 @@ pip uninstall mcp
 pip install git+https://github.com/modelcontextprotocol/python-sdk.git
 ```
 
-## 📚 Documentation
+## 📚 Resources
 
-- [SETUP_GUIDE.md](docs/SETUP_GUIDE.md) - Detailed setup walkthrough
-- [DOCUGEN_USER_PROMPTS.md](docs/DOCUGEN_USER_PROMPTS.md) - Example prompts
-- [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md) - How Claude uses DocuGen
-- [CLAUDE.md](docs/CLAUDE.md) - Development notes
+### Getting Started
+- [SETUP_GUIDE.md](docs/SETUP_GUIDE.md) - Detailed setup walkthrough with screenshots
+- [DOCUGEN_USER_PROMPTS.md](docs/DOCUGEN_USER_PROMPTS.md) - 50+ example prompts to try
+
+### Enhancing Claude's Performance
+- [DOCUGEN_SYSTEM_PROMPT.md](docs/DOCUGEN_SYSTEM_PROMPT.md) - Paste this in your conversation for better results (includes 12 detailed workflow examples)
 
 ## 🤝 Contributing
 
