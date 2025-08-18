@@ -91,3 +91,9 @@ docs/.sphinx/
 
 # Archive and old code
 archive/
+
+# Root CLAUDE.md (project-specific, not for version control)
+/CLAUDE.md
+
+# Examples folder (contains sensitive config)
+examples/
