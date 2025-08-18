@@ -144,15 +144,12 @@ Create a pivot table and sales chart"
 Test the server installation:
 
 ```bash
-# Test with example script
+# Test server with dummy credentials (no authentication required)
 cd docugen
-python3.12 examples/test_server.py
+GOOGLE_OAUTH_PATH="/tmp/dummy_credentials.json" python3.12 docugen_mcp_server.py --help
 
-# You should see:
-# ✓ Server module imported successfully
-# ✓ FastMCP server instance found
-# ✓ Found 62 tools registered
-# ✓ Found 6/6 key operations as functions
+# For actual testing with authentication:
+GOOGLE_OAUTH_PATH="/path/to/your/credentials.json" python3.12 docugen_mcp_server.py
 ```
 
 ## 📁 Project Structure
@@ -161,15 +158,12 @@ python3.12 examples/test_server.py
 docugen/
 ├── docugen_mcp_server.py    # Main server (3700+ lines, 62 operations)
 ├── requirements.txt         # Python dependencies
-├── docs/
-│   ├── CLAUDE.md           # Development guide
-│   ├── SETUP_GUIDE.md      # Detailed setup instructions
-│   ├── DOCUGEN_SYSTEM_PROMPT.md  # Claude's instructions
-│   └── DOCUGEN_USER_PROMPTS.md   # Example prompts
-└── examples/
-    ├── claude_desktop_config.json  # Example configuration
-    ├── test_server.py              # Test script
-    └── usage_example.py            # Usage examples
+├── LICENSE                  # Apache 2.0 license
+├── README.md               # This file
+└── docs/
+    ├── SETUP_GUIDE.md      # Detailed setup instructions
+    ├── DOCUGEN_SYSTEM_PROMPT.md  # Claude's instructions
+    └── DOCUGEN_USER_PROMPTS.md   # Example prompts
 ```
 
 ## 🔧 How It Works
@@ -183,7 +177,7 @@ docugen/
 
 - Uses **FastMCP** framework for efficient MCP implementation
 - **OAuth 2.0** authentication with Google
-- Token stored securely in `~/.docugen/sheets_token.json`
+- Token stored securely in `~/.docugen/token.json`
 - All operations in a single, well-organized file
 - Comprehensive error handling and validation
 
@@ -231,7 +225,7 @@ To add new operations:
 1. Add your function to `docugen_mcp_server.py`
 2. Decorate with `@mcp.tool()`
 3. Follow the existing pattern for parameters and returns
-4. Test with `examples/test_server.py`
+4. Test with the server using dummy or real credentials
 
 ## 📄 License
 
